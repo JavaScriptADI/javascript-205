@@ -1,0 +1,873 @@
+<!-- JavaScript Workshop 01 — toolkit intro deck. Self-contained. Use ← → / Space to navigate. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript · Workshop 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --mute:#7a7a7a;
+    --line:#e3e3e3;
+    --line2:#111;
+    --paper:#ffffff;
+    /* Luka's installed Coolvetica Compressed is used automatically if present, else Anton */
+    --display:'Coolvetica Compressed','Coolvetica',Anton,'Arial Narrow',sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{background:var(--paper); color:var(--ink); font-family:var(--body); -webkit-font-smoothing:antialiased; overflow:hidden}
+
+  .viewport{position:fixed; inset:0; overflow:hidden; background:var(--paper)}
+  .stage{position:absolute; top:50%; left:50%; width:1440px; height:900px; transform-origin:center center}
+
+  .slide{position:absolute; inset:0; opacity:0; pointer-events:none; padding:90px 100px; display:flex; flex-direction:column}
+  .slide.active{opacity:1; pointer-events:auto}
+
+  /* opening brackets on every slide */
+  .brk{position:absolute; top:60px; width:24px; height:780px; border:2.5px solid var(--ink); pointer-events:none}
+  .brk.l{left:36px; border-right:0}
+  .brk.r{right:36px; border-left:0}
+  @keyframes brkopen{from{height:0} to{height:780px}}
+  .slide.active .brk{animation:brkopen .65s cubic-bezier(.25,.8,.25,1) both}
+
+  /* header row on each slide */
+  .head{display:flex; justify-content:space-between; align-items:flex-start}
+  .kick{font-size:15px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+  .kick .b{color:var(--mute)}
+  .num{font-family:var(--display); font-size:30px; letter-spacing:.04em; color:var(--mute); line-height:1}
+
+  .foot{position:absolute; left:100px; right:100px; bottom:54px; border-top:1px solid var(--line); padding-top:16px;
+        display:flex; justify-content:space-between; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute)}
+
+  .body{flex:1; display:flex; flex-direction:column; justify-content:center}
+
+  h1{font-family:var(--display); font-weight:400; text-transform:uppercase; line-height:.92; letter-spacing:.005em}
+  .h-xl{font-size:108px}
+  .h-lg{font-size:84px}
+  .h-md{font-size:64px}
+  .lead{font-size:27px; line-height:1.5; color:#222; max-width:62ch}
+  .lead .hl{color:var(--ink); font-weight:600}
+  .mut{color:var(--mute)}
+  .tag{display:inline-block; font-weight:600; letter-spacing:.04em}
+
+  /* entrance reveal */
+  @keyframes rise{from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:none}}
+  .slide .r{opacity:0}
+  .slide.active .r{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:var(--d,0s)}
+
+  /* title */
+  .title-wrap{display:flex; flex-direction:column; justify-content:center; height:100%}
+  .title-wrap .kick{margin-bottom:40px}
+  .big{font-family:var(--display); font-size:200px; line-height:.9; letter-spacing:.005em}
+  .rule{height:2px; background:var(--ink); margin:30px 0}
+  .subline{font-size:30px; color:#222; font-weight:500}
+  .motif{font-family:var(--mono); font-size:22px; color:var(--mute); text-transform:none; letter-spacing:0}
+
+  /* steps row */
+  .steps{display:flex; gap:22px; margin-top:44px}
+  .step{flex:1; border:1.5px solid var(--ink); padding:26px 24px; min-height:158px; position:relative}
+  .step .n{font-family:var(--display); font-size:38px; line-height:1}
+  .step .t{font-size:20px; font-weight:700; margin-top:13px; letter-spacing:.03em}
+  .step .d{font-size:15px; color:var(--mute); margin-top:7px; line-height:1.45}
+  .arrow{align-self:center; font-size:28px; color:var(--mute)}
+
+  /* two columns box */
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:40px; border:1.5px solid var(--ink)}
+  .cols2 .c{padding:30px 34px}
+  .cols2 .c:first-child{border-right:1.5px solid var(--ink)}
+  .cols2 .lbl{font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:16px}
+  .cols2 ul{list-style:none}
+  .cols2 li{font-size:21px; line-height:1.7; padding-left:24px; position:relative}
+  .cols2 li::before{content:"—"; position:absolute; left:0; color:var(--mute)}
+
+  /* cell grid */
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:1fr; gap:0; margin-top:40px;
+        border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink)}
+  .grid.c3{grid-template-columns:repeat(3,1fr)}
+  .cell{border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); padding:26px 24px; min-height:170px}
+  .cell .ct{font-size:19px; font-weight:700; letter-spacing:.04em}
+  .cell .cd{font-size:16px; color:var(--mute); margin-top:10px; line-height:1.5}
+
+  /* split layout */
+  .split{display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; margin-top:30px}
+  .reasons{list-style:none}
+  .reasons li{font-size:23px; line-height:1.45; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:18px}
+  .reasons li:first-child{border-top:1px solid var(--line)}
+  .reasons .rk{font-family:var(--display); font-size:26px; color:var(--mute); min-width:40px}
+  .pq{font-family:var(--mono); font-size:21px; font-weight:500}
+  .bigcode{border:1.5px solid var(--ink); padding:40px 38px}
+  .bigcode .lab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:22px}
+  .bigcode code{font-family:var(--mono); font-size:26px; display:block; line-height:1.7; white-space:pre}
+
+  /* code slides */
+  .code{font-family:var(--mono); border:1.5px solid var(--ink); padding:34px 40px; font-size:27px; line-height:1.75; white-space:pre; overflow-x:auto}
+  .code .kw{font-weight:700}
+  .code .com{color:var(--mute)}
+  .code .str{color:var(--ink)}
+  .out{margin-top:22px; border-left:3px solid var(--ink); padding:14px 0 14px 22px}
+  .out .ol{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:8px}
+  .out .ov{font-family:var(--mono); font-size:27px}
+  .note{font-size:21px; color:#222; margin-top:26px; line-height:1.55; max-width:80ch}
+  .note .hl{font-weight:600}
+  .codewrap{display:grid; grid-template-columns:1fr; gap:0; margin-top:24px}
+
+  /* console table */
+  .mtab{border:1.5px solid var(--ink); margin-top:26px}
+  .mrow{display:grid; grid-template-columns:1.2fr 56px 1fr; align-items:center; padding:16px 34px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:24px}
+  .mrow:last-child{border-bottom:0}
+  .mrow .ex{font-weight:500}
+  .mrow .ar{color:var(--mute); text-align:center}
+  .mrow .re{display:flex; justify-content:space-between; align-items:center; gap:14px}
+  .mrow .rc{font-size:15px; color:var(--mute); font-family:var(--mono); white-space:nowrap}
+
+  /* labeled boxes */
+  .vbox-row{display:flex; gap:26px; margin-top:32px}
+  .vbox{border:1.5px solid var(--ink); padding:0; flex:1}
+  .vbox .vl{font-size:14px; letter-spacing:.14em; text-transform:uppercase; padding:12px 20px; border-bottom:1.5px solid var(--ink); color:var(--mute)}
+  .vbox .vv{font-size:26px; font-weight:600; padding:24px 20px; line-height:1.3}
+  .vbox .vv .sm{display:block; font-size:16px; font-weight:400; color:var(--mute); margin-top:8px}
+
+  /* mock button */
+  .btnmock{display:inline-flex; align-items:center; gap:14px; background:var(--ink); color:#fff; font-size:24px; font-weight:600;
+           padding:20px 44px; margin-top:34px; letter-spacing:.02em}
+  .btnmock .ic{font-size:26px}
+
+  /* diff + timeline */
+  .diffbox{border:1.5px solid var(--ink); font-family:var(--mono); font-size:21px; line-height:2; padding:26px 32px; white-space:pre; overflow-x:auto}
+  .diffbox .cx{color:#444}
+  .diffbox .dl{color:var(--mute); text-decoration:line-through}
+  .diffbox .al{font-weight:700}
+  .boxlab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:14px}
+  .tlbox{border:1.5px solid var(--ink); padding:28px 32px}
+  .tl{list-style:none; margin-left:8px; border-left:2px solid var(--ink); padding-left:26px}
+  .tl li{position:relative; padding:12px 0}
+  .tl li::before{content:""; position:absolute; left:-33px; top:22px; width:12px; height:12px; background:var(--ink); border-radius:50%}
+  .tl .tt{font-family:var(--mono); font-size:21px; font-weight:600}
+  .tl .ts{font-size:15px; color:var(--mute); margin-top:4px}
+
+  /* recap / checklist */
+  .recap{list-style:none; margin-top:30px}
+  .recap li{font-size:25px; line-height:1.4; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:20px}
+  .recap li:first-child{border-top:1px solid var(--line)}
+  .recap .rn{font-family:var(--display); font-size:28px; color:var(--mute); min-width:44px}
+  .teaser{margin-top:32px; font-size:23px}
+  .teaser .hl{font-weight:600}
+
+  /* svg mockups */
+  .mock{display:flex; justify-content:center; margin-top:26px}
+  .mock svg{display:block; width:100%; height:auto}
+  .w-stroke{fill:#fff; stroke:var(--ink); stroke-width:2.5}
+  .w-thin{stroke:var(--ink); stroke-width:1.5}
+  .w-sep{stroke:var(--ink); stroke-width:1.5}
+  .w-bar{fill:var(--line)}
+  .w-barink{fill:var(--ink)}
+  .w-lab{font-family:var(--body); font-size:11px; letter-spacing:.14em; fill:var(--mute)}
+  .w-txt{font-family:var(--body); font-size:13px; font-weight:700; fill:var(--ink)}
+  .w-mono{font-family:var(--mono); font-size:13px; fill:var(--ink)}
+  .w-mono-m{font-family:var(--mono); font-size:13px; fill:var(--mute)}
+  .ann{font-family:var(--body); font-weight:700; font-size:17px; letter-spacing:.04em; fill:var(--ink)}
+  .ann-sub{font-family:var(--body); font-size:14px; fill:var(--mute)}
+  .ann-line{stroke:var(--ink); stroke-width:1.5}
+  .w-bcirc{fill:#fff; stroke:var(--ink); stroke-width:2}
+  .w-badge{font-family:var(--body); font-weight:700; font-size:14px; fill:var(--ink); text-anchor:middle; dominant-baseline:central}
+
+  /* end */
+  .end-q{font-family:var(--display); font-size:200px; line-height:.85}
+
+  /* overlay UI (outside scaled stage) */
+  .ui{position:fixed; left:0; right:0; bottom:0; height:46px; display:flex; align-items:center; gap:18px; padding:0 20px; z-index:50; pointer-events:none}
+  .ui .prog-track{flex:1; height:2px; background:var(--line)}
+  .ui .prog{height:2px; background:var(--ink); width:0; transition:width .4s ease}
+  .ui .count{font-family:var(--mono); font-size:13px; color:var(--mute); letter-spacing:.1em}
+  .ui .btns{display:flex; gap:8px; pointer-events:auto}
+  .ui button{font-family:var(--body); font-size:16px; width:34px; height:30px; border:1px solid var(--ink); background:#fff; cursor:pointer; line-height:1}
+  .ui button:hover{background:var(--ink); color:#fff}
+  .hint{position:fixed; bottom:60px; right:24px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); z-index:50; transition:opacity .6s; pointer-events:none}
+</style>
+
+<div class="viewport">
+  <div class="stage" id="stage">
+
+    <!-- 01 TITLE -->
+    <section class="slide" id="s-title">
+      <div class="title-wrap">
+        <div class="kick r" style="--d:0s">[ JAVASCRIPT <span class="b">·</span> WORKSHOP 01 ]</div>
+        <div class="big r" style="--d:.08s">JAVASCRIPT</div>
+        <div class="rule r" style="--d:.16s"></div>
+        <div class="subline r" style="--d:.22s">The toolkit first. The code follows.</div>
+      </div>
+      <div class="foot">
+        <span class="motif">&gt; console.log("hello, world")</span>
+        <span>Workshop 01 · Introduction</span>
+      </div>
+    </section>
+
+    <!-- 02 WHY JS -->
+    <section class="slide" id="s-whyjs">
+      <div class="head"><div class="kick">[ WHY JAVASCRIPT ]</div><div class="num">02</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">The page loads. Then<br>JavaScript takes over.</h1>
+        <p class="lead r" style="--d:.12s; margin-top:22px">HTML is the structure, CSS is the look — <span class="hl">JavaScript is everything that happens after.</span> You met all of these this week:</p>
+        <div class="grid">
+          <div class="cell r" style="--d:.20s"><div class="ct">[LOADING PRODUCTS]</div><div class="cd">Scroll the shop — more items appear, fetched live.</div></div>
+          <div class="cell r" style="--d:.24s"><div class="ct">[LIVE SEARCH]</div><div class="cd">Results update under your fingers as you type.</div></div>
+          <div class="cell r" style="--d:.28s"><div class="ct">[THE CART]</div><div class="cd">Add to cart — the badge ticks up, the total recalculates.</div></div>
+          <div class="cell r" style="--d:.32s"><div class="ct">[FORM CHECKS]</div><div class="cd">"Email looks wrong" — caught before you press send.</div></div>
+          <div class="cell r" style="--d:.36s"><div class="ct">[FILTERS &amp; SORT]</div><div class="cd">Move the price slider — the grid rearranges instantly.</div></div>
+          <div class="cell r" style="--d:.40s"><div class="ct">[DARK MODE]</div><div class="cd">One click repaints the entire site.</div></div>
+          <div class="cell r" style="--d:.44s"><div class="ct">[LIVE MAPS]</div><div class="cd">Drag, zoom, watch the courier's pin move.</div></div>
+          <div class="cell r" style="--d:.48s"><div class="ct">[NOTIFICATIONS]</div><div class="cd">The red badge, the chat bubble, the toast popup.</div></div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Why JavaScript</span></div>
+    </section>
+
+    <!-- 03 TODAY -->
+    <section class="slide" id="s-today">
+      <div class="head"><div class="kick">[ TODAY ]</div><div class="num">03</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Build your workshop.</h1>
+        <p class="lead r" style="--d:.12s; margin-top:26px">A carpenter sets up the bench before the chair. Today we build yours — <span class="hl">and make the first cuts in JavaScript.</span></p>
+        <div class="steps">
+          <div class="step r" style="--d:.22s"><div class="n">01</div><div class="t">ENVIRONMENT</div><div class="d">Editor, runtime, browser.</div></div>
+          <div class="arrow r" style="--d:.27s">→</div>
+          <div class="step r" style="--d:.30s"><div class="n">02</div><div class="t">FIRST JS</div><div class="d">console.log, math, variables.</div></div>
+          <div class="arrow r" style="--d:.35s">→</div>
+          <div class="step r" style="--d:.38s"><div class="n">03</div><div class="t">GITHUB</div><div class="d">Account, repo, profile.</div></div>
+          <div class="arrow r" style="--d:.43s">→</div>
+          <div class="step r" style="--d:.46s"><div class="n">04</div><div class="t">GIT · NO TERMINAL</div><div class="d">Clone, commit, sync — clicks only.</div></div>
+          <div class="arrow r" style="--d:.51s">→</div>
+          <div class="step r" style="--d:.54s"><div class="n">05</div><div class="t">AI TOOLS</div><div class="d">A tutor on demand. Rules included.</div></div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Agenda</span></div>
+    </section>
+
+    <!-- 04 VS CODE -->
+    <section class="slide" id="s-vscode">
+      <div class="head"><div class="kick">[ 01 <span class="b">·</span> ENVIRONMENT ]</div><div class="num">04</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">VS Code. Your workbench.</h1>
+        <div class="split">
+          <ul class="reasons">
+            <li class="r" style="--d:.12s"><span class="rk">01</span><span>The world's default editor — free, fast, everywhere.</span></li>
+            <li class="r" style="--d:.18s"><span class="rk">02</span><span>Git is built in. Part 04 happens right here.</span></li>
+            <li class="r" style="--d:.24s"><span class="rk">03</span><span>Extensions turn it into anything you need.</span></li>
+            <li class="r" style="--d:.30s"><span class="rk">04</span><span>One window: files, code, terminal, version control.</span></li>
+          </ul>
+          <div class="bigcode r" style="--d:.24s">
+            <div class="lab">[ INSTALL ]</div>
+            <code>code.visualstudio.com
+→ Download
+→ Install · defaults are fine</code>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>VS Code</span></div>
+    </section>
+
+    <!-- 05 THE WINDOW -->
+    <section class="slide" id="s-window">
+      <div class="head"><div class="kick">[ 01 <span class="b">·</span> ENVIRONMENT ]</div><div class="num">05</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s; margin-bottom:0">Know your window.</h1>
+        <div class="mock r" style="--d:.14s; max-width:1080px; align-self:center; width:100%">
+          <svg viewBox="0 0 1160 600">
+            <!-- window -->
+            <rect class="w-stroke" x="260" y="30" width="560" height="520" rx="8"/>
+            <line class="w-sep" x1="260" y1="66" x2="820" y2="66"/>
+            <circle class="w-thin" fill="#fff" cx="284" cy="48" r="6"/>
+            <circle class="w-thin" fill="#fff" cx="306" cy="48" r="6"/>
+            <circle class="w-thin" fill="#fff" cx="328" cy="48" r="6"/>
+            <!-- 1 : activity bar -->
+            <line class="w-sep" x1="308" y1="66" x2="308" y2="520"/>
+            <rect class="w-thin" fill="#fff" x="276" y="94" width="14" height="18" rx="2"/>
+            <rect class="w-thin" fill="#fff" x="282" y="88" width="14" height="18" rx="2"/>
+            <circle class="w-thin" fill="#fff" cx="283" cy="146" r="8"/>
+            <line class="w-thin" x1="289" y1="152" x2="297" y2="160"/>
+            <rect x="268" y="176" width="32" height="32" rx="7" fill="#0a0a0a"/>
+            <circle cx="280" cy="185" r="3.5" fill="none" stroke="#fff" stroke-width="2"/>
+            <circle cx="280" cy="199" r="3.5" fill="none" stroke="#fff" stroke-width="2"/>
+            <circle cx="292" cy="192" r="3.5" fill="none" stroke="#fff" stroke-width="2"/>
+            <line x1="280" y1="188.5" x2="280" y2="195.5" stroke="#fff" stroke-width="2"/>
+            <line x1="282.5" y1="186.5" x2="289" y2="190.5" stroke="#fff" stroke-width="2"/>
+            <rect class="w-thin" fill="#fff" x="272" y="238" width="11" height="11" rx="1.5"/>
+            <rect class="w-thin" fill="#fff" x="286" y="238" width="11" height="11" rx="1.5"/>
+            <rect class="w-thin" fill="#fff" x="272" y="252" width="11" height="11" rx="1.5"/>
+            <rect class="w-thin" fill="#fff" x="288" y="254" width="11" height="11" rx="1.5"/>
+            <circle class="w-bcirc" cx="284" cy="308" r="13"/><text class="w-badge" x="284" y="308">1</text>
+            <!-- 2 : explorer -->
+            <line class="w-sep" x1="458" y1="66" x2="458" y2="520"/>
+            <text class="w-lab" x="322" y="92">EXPLORER</text>
+            <text class="w-txt" x="322" y="120">JS-COURSE</text>
+            <text class="w-mono" x="340" y="146">hello.js</text>
+            <text class="w-mono-m" x="340" y="170">README.md</text>
+            <circle class="w-bcirc" cx="383" cy="308" r="13"/><text class="w-badge" x="383" y="308">2</text>
+            <!-- 3 : editor -->
+            <line class="w-sep" x1="458" y1="96" x2="820" y2="96"/>
+            <text class="w-mono" x="478" y="87">hello.js</text>
+            <rect x="472" y="92" width="80" height="3" fill="#0a0a0a"/>
+            <rect class="w-barink" x="478" y="118" width="46" height="8" rx="4"/><rect class="w-bar" x="532" y="118" width="150" height="8" rx="4"/>
+            <rect class="w-bar" x="506" y="140" width="240" height="8" rx="4"/>
+            <rect class="w-barink" x="506" y="162" width="58" height="8" rx="4"/><rect class="w-bar" x="572" y="162" width="130" height="8" rx="4"/>
+            <rect class="w-bar" x="478" y="184" width="86" height="8" rx="4"/>
+            <rect class="w-barink" x="478" y="228" width="46" height="8" rx="4"/><rect class="w-bar" x="532" y="228" width="200" height="8" rx="4"/>
+            <rect class="w-bar" x="506" y="250" width="180" height="8" rx="4"/>
+            <rect class="w-bar" x="478" y="272" width="60" height="8" rx="4"/>
+            <circle class="w-bcirc" cx="778" cy="132" r="13"/><text class="w-badge" x="778" y="132">3</text>
+            <!-- 4 : terminal -->
+            <line class="w-sep" x1="458" y1="352" x2="820" y2="352"/>
+            <text class="w-lab" x="474" y="376">TERMINAL</text>
+            <text class="w-mono" x="474" y="404">&gt; node -v</text>
+            <text class="w-mono" x="474" y="428" font-weight="700">v24.x.x</text>
+            <text class="w-mono-m" x="474" y="452">&gt; ▍</text>
+            <circle class="w-bcirc" cx="778" cy="402" r="13"/><text class="w-badge" x="778" y="402">4</text>
+            <!-- 5 : status bar -->
+            <line class="w-sep" x1="260" y1="520" x2="820" y2="520"/>
+            <circle cx="280" cy="530" r="2.8" fill="none" stroke="#0a0a0a" stroke-width="1.6"/>
+            <circle cx="280" cy="542" r="2.8" fill="none" stroke="#0a0a0a" stroke-width="1.6"/>
+            <circle cx="290" cy="536" r="2.8" fill="none" stroke="#0a0a0a" stroke-width="1.6"/>
+            <line x1="280" y1="532.8" x2="280" y2="539.2" stroke="#0a0a0a" stroke-width="1.6"/>
+            <line x1="282.3" y1="531.5" x2="287.7" y2="534.7" stroke="#0a0a0a" stroke-width="1.6"/>
+            <text class="w-mono" x="300" y="541" font-size="12.5">main</text>
+            <text class="w-mono" x="356" y="541" font-size="12.5">↻ 0↑ 0↓</text>
+            <circle class="w-bcirc" cx="788" cy="536" r="11"/><text class="w-badge" x="788" y="536" font-size="12.5">5</text>
+            <!-- source control callout -->
+            <text class="ann" x="24" y="186">[ SOURCE CONTROL ]</text>
+            <text class="ann-sub" x="24" y="208">part 04 happens here</text>
+            <line class="ann-line" x1="210" y1="192" x2="264" y2="192"/>
+            <!-- legend -->
+            <circle class="w-bcirc" cx="866" cy="96" r="13"/><text class="w-badge" x="866" y="96">1</text>
+            <text class="ann" x="892" y="102">[ ACTIVITY BAR ]</text>
+            <text class="ann-sub" x="892" y="126">the icon rail, far left</text>
+            <circle class="w-bcirc" cx="866" cy="192" r="13"/><text class="w-badge" x="866" y="192">2</text>
+            <text class="ann" x="892" y="198">[ EXPLORER ]</text>
+            <text class="ann-sub" x="892" y="222">your project&#39;s files</text>
+            <circle class="w-bcirc" cx="866" cy="288" r="13"/><text class="w-badge" x="866" y="288">3</text>
+            <text class="ann" x="892" y="294">[ EDITOR ]</text>
+            <text class="ann-sub" x="892" y="318">where you type</text>
+            <circle class="w-bcirc" cx="866" cy="384" r="13"/><text class="w-badge" x="866" y="384">4</text>
+            <text class="ann" x="892" y="390">[ TERMINAL ]</text>
+            <text class="ann-sub" x="892" y="414">one command today: node -v</text>
+            <circle class="w-bcirc" cx="866" cy="480" r="13"/><text class="w-badge" x="866" y="480">5</text>
+            <text class="ann" x="892" y="486">[ STATUS BAR ]</text>
+            <text class="ann-sub" x="892" y="510">branch + sync, always visible</text>
+          </svg>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>The window</span></div>
+    </section>
+
+    <!-- 06 NODE -->
+    <section class="slide" id="s-node">
+      <div class="head"><div class="kick">[ 01 <span class="b">·</span> ENVIRONMENT ]</div><div class="num">06</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">JavaScript, outside the browser.</h1>
+        <p class="lead r" style="--d:.12s; margin-top:24px">JS was born inside web pages. <span class="hl">[Node.js]</span> set it free — now it runs servers, build tools, and the scripts of this course. Get it at <span class="hl">nodejs.org</span> — press the <span class="hl">[LTS]</span> button, defaults all the way.</p>
+        <div class="codewrap r" style="--d:.24s">
+          <div class="code">node -v</div>
+          <div class="out"><div class="ol">[ output ]</div><div class="ov">v24.x.x&nbsp;&nbsp;<span style="color:var(--mute); font-size:19px">· any LTS is fine</span></div></div>
+        </div>
+        <p class="note r" style="--d:.34s">Open VS Code's terminal — <span class="hl">Ctrl + `</span> — type it, press Enter. Ten seconds. <span class="hl">That's the only typing the terminal gets today.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Node.js</span></div>
+    </section>
+
+    <!-- 07 EXTENSIONS -->
+    <section class="slide" id="s-ext">
+      <div class="head"><div class="kick">[ 01 <span class="b">·</span> ENVIRONMENT ]</div><div class="num">07</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Four extensions. Install once.</h1>
+        <div class="grid">
+          <div class="cell r" style="--d:.10s"><div class="ct">[PRETTIER]</div><div class="cd">Formats your code on save. Ends every argument about style.</div></div>
+          <div class="cell r" style="--d:.16s"><div class="ct">[ESLINT]</div><div class="cd">Underlines mistakes while you type — before you ever run.</div></div>
+          <div class="cell r" style="--d:.22s"><div class="ct">[LIVE SERVER]</div><div class="cd">One click — your page opens in the browser and reloads on every save.</div></div>
+          <div class="cell r" style="--d:.28s"><div class="ct">[ERROR LENS]</div><div class="cd">Prints the error message right on the line. Impossible to miss.</div></div>
+        </div>
+        <p class="note r" style="--d:.38s">Extensions icon in the activity bar → search the name → <span class="hl">[Install]</span>. Four installs, two minutes.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Extensions</span></div>
+    </section>
+
+    <!-- 08 DEVTOOLS -->
+    <section class="slide" id="s-devtools">
+      <div class="head"><div class="kick">[ 01 <span class="b">·</span> ENVIRONMENT ]</div><div class="num">08</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Every browser tab is a JS machine.</h1>
+        <div class="mtab">
+          <div class="mrow r" style="--d:.10s"><span class="ex">2 + 2</span><span class="ar">→</span><span class="re"><span>4</span><span class="rc">instant math</span></span></div>
+          <div class="mrow r" style="--d:.16s"><span class="ex">"Java" + "Script"</span><span class="ar">→</span><span class="re"><span>"JavaScript"</span><span class="rc">strings glue together</span></span></div>
+          <div class="mrow r" style="--d:.22s"><span class="ex">new Date().getFullYear()</span><span class="ar">→</span><span class="re"><span>2026</span><span class="rc">real objects, live</span></span></div>
+        </div>
+        <p class="note r" style="--d:.32s"><span class="hl">[F12]</span> — or Ctrl+Shift+I / ⌥⌘I — then the <span class="hl">[CONSOLE]</span> tab. Type, Enter, answer. <span class="hl">This is your scratchpad for the whole course.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>DevTools</span></div>
+    </section>
+
+    <!-- 09 FIRST JS INTRO -->
+    <section class="slide" id="s-yourturn">
+      <div class="head"><div class="kick">[ 02 <span class="b">·</span> FIRST JAVASCRIPT ]</div><div class="num">09</div></div>
+      <div class="body">
+        <h1 class="h-xl r" style="--d:0s">Let's write some<br>JavaScript.</h1>
+        <p class="lead r" style="--d:.16s; margin-top:30px">Three building blocks sit inside <span class="hl">every program ever written</span>. Everything on the next slides runs right in your DevTools console:</p>
+        <p class="r" style="--d:.26s; margin-top:16px; font-size:34px; font-weight:700; letter-spacing:.02em">[ CONSOLE.LOG ] &nbsp; · &nbsp; [ MATH ] &nbsp; · &nbsp; [ VARIABLES ]</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Your turn</span></div>
+    </section>
+
+    <!-- 10 CONSOLE.LOG -->
+    <section class="slide" id="s-log">
+      <div class="head"><div class="kick">[ 02 <span class="b">·</span> FIRST JAVASCRIPT ]</div><div class="num">10</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Say something.</h1>
+        <div class="codewrap r" style="--d:.12s">
+          <div class="code"><span class="kw">console.log</span>(<span class="str">"Hello, world!"</span>)</div>
+          <div class="out"><div class="ol">[ output ]</div><div class="ov">Hello, world!</div></div>
+        </div>
+        <p class="note r" style="--d:.24s"><span class="hl">console.log()</span> prints to the console. The quotes mean it's <span class="hl">text</span> — programmers call that a <span class="hl">string</span>. Works the same in DevTools and in Node. Try printing your own name.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>console.log()</span></div>
+    </section>
+
+    <!-- 11 MATH -->
+    <section class="slide" id="s-jsmath">
+      <div class="head"><div class="kick">[ 02 <span class="b">·</span> FIRST JAVASCRIPT ]</div><div class="num">11</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">A calculator that never tires.</h1>
+        <div class="mtab">
+          <div class="mrow r" style="--d:.10s"><span class="ex">2 + 3</span><span class="ar">→</span><span class="re"><span>5</span><span class="rc">add</span></span></div>
+          <div class="mrow r" style="--d:.14s"><span class="ex">10 - 4</span><span class="ar">→</span><span class="re"><span>6</span><span class="rc">subtract</span></span></div>
+          <div class="mrow r" style="--d:.18s"><span class="ex">6 * 7</span><span class="ar">→</span><span class="re"><span>42</span><span class="rc">multiply</span></span></div>
+          <div class="mrow r" style="--d:.22s"><span class="ex">20 / 4</span><span class="ar">→</span><span class="re"><span>5</span><span class="rc">divide</span></span></div>
+          <div class="mrow r" style="--d:.26s"><span class="ex">2 ** 10</span><span class="ar">→</span><span class="re"><span>1024</span><span class="rc">power</span></span></div>
+          <div class="mrow r" style="--d:.30s"><span class="ex">17 % 5</span><span class="ar">→</span><span class="re"><span>2</span><span class="rc">remainder</span></span></div>
+        </div>
+        <p class="note r" style="--d:.36s"><span class="hl">+ &nbsp; - &nbsp; * &nbsp; /</span> for the basics. <span class="hl">**</span> is power, <span class="hl">%</span> gives the remainder. Type them straight into the console.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Math</span></div>
+    </section>
+
+    <!-- 12 VARIABLES -->
+    <section class="slide" id="s-vars">
+      <div class="head"><div class="kick">[ 02 <span class="b">·</span> FIRST JAVASCRIPT ]</div><div class="num">12</div></div>
+      <div class="body" style="flex-direction:row; gap:54px; align-items:center">
+        <div style="flex:1.15">
+          <h1 class="h-md r" style="--d:0s; margin-bottom:22px">Labeled boxes.</h1>
+          <div class="code r" style="--d:.12s; font-size:24px"><span class="tag" style="font-family:var(--body); color:var(--mute); font-size:14px; letter-spacing:.16em; display:block; margin-bottom:16px">[ CODE ]</span><span class="kw">const</span> name = <span class="str">"Luka"</span>
+<span class="kw">let</span>   age  = 25
+<span class="kw">console.log</span>(name)      <span class="com">// Luka</span>
+<span class="kw">console.log</span>(age + 1)   <span class="com">// 26</span></div>
+        </div>
+        <div style="flex:.85">
+          <div class="vbox-row" style="flex-direction:column">
+            <div class="vbox r" style="--d:.22s"><div class="vl">[ name · const ]</div><div class="vv" style="font-family:var(--mono)">"Luka"</div></div>
+            <div class="vbox r" style="--d:.30s"><div class="vl">[ age · let ]</div><div class="vv" style="font-family:var(--mono)">25</div></div>
+          </div>
+          <p class="note r" style="--d:.38s; margin-top:24px"><span class="hl">=</span> stores a value in a name. <span class="hl">let</span> can change later — age = age + 1. <span class="hl">const</span> is locked in. When unsure, start with <span class="hl">const</span>.</p>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Variables</span></div>
+    </section>
+
+    <!-- 13 TOGETHER -->
+    <section class="slide" id="s-together2">
+      <div class="head"><div class="kick">[ 02 <span class="b">·</span> FIRST JAVASCRIPT ]</div><div class="num">13</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Your first useful program.</h1>
+        <div class="codewrap r" style="--d:.12s">
+          <div class="code"><span class="kw">const</span> price = 25
+<span class="kw">const</span> qty   = 3
+<span class="kw">const</span> total = price * qty
+<span class="kw">console.log</span>(<span class="str">`Total: ${total} GEL`</span>)</div>
+          <div class="out"><div class="ol">[ output ]</div><div class="ov">Total: 75 GEL</div></div>
+        </div>
+        <p class="note r" style="--d:.24s">Variables + math + console.log, working together. The backtick string <span class="hl">`...${ }`</span> drops a value straight into the text — that's the <span class="hl">backtick</span> key (top-left), not a quote.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Together</span></div>
+    </section>
+
+    <!-- 14 GITHUB -->
+    <section class="slide" id="s-github">
+      <div class="head"><div class="kick">[ 03 <span class="b">·</span> GITHUB ]</div><div class="num">14</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">A home for your code.</h1>
+        <p class="lead r" style="--d:.12s; margin-top:26px">Cloud storage that remembers <span class="hl">every version of every file, forever</span> — and doubles as your public portfolio. Recruiters really do look at it.</p>
+        <div class="vbox-row">
+          <div class="vbox r" style="--d:.22s"><div class="vl">[ REPOSITORY ]</div><div class="vv">One project<span class="sm">a folder with a memory</span></div></div>
+          <div class="vbox r" style="--d:.30s"><div class="vl">[ COMMIT ]</div><div class="vv">One snapshot<span class="sm">a saved point in time</span></div></div>
+          <div class="vbox r" style="--d:.38s"><div class="vl">[ CLONE ]</div><div class="vv">Your local copy<span class="sm">the repo, on your disk</span></div></div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>GitHub</span></div>
+    </section>
+
+    <!-- 15 GIT VS GITHUB -->
+    <section class="slide" id="s-gitvs">
+      <div class="head"><div class="kick">[ 03 <span class="b">·</span> GITHUB ]</div><div class="num">15</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Git is not GitHub.</h1>
+        <div class="cols2">
+          <div class="c r" style="--d:.14s">
+            <div class="lbl">[ GIT ]</div>
+            <ul>
+              <li>A tool on your computer</li>
+              <li>Takes snapshots of a project</li>
+              <li>Works fully offline</li>
+            </ul>
+          </div>
+          <div class="c r" style="--d:.22s">
+            <div class="lbl">[ GITHUB ]</div>
+            <ul>
+              <li>A website</li>
+              <li>Stores your snapshots online</li>
+              <li>Adds profiles, teams, sharing</li>
+            </ul>
+          </div>
+        </div>
+        <p class="note r" style="--d:.32s"><span class="hl">Git takes the photos. GitHub is the album everyone can visit.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Git ≠ GitHub</span></div>
+    </section>
+
+    <!-- 16 FIRST REPO -->
+    <section class="slide" id="s-repo">
+      <div class="head"><div class="kick">[ 03 <span class="b">·</span> GITHUB ]</div><div class="num">16</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Make your first repository.</h1>
+        <div class="steps">
+          <div class="step r" style="--d:.12s"><div class="n">01</div><div class="t">SIGN UP</div><div class="d">github.com — pick a username you'd put on a CV. It sticks.</div></div>
+          <div class="arrow r" style="--d:.18s">→</div>
+          <div class="step r" style="--d:.22s"><div class="n">02</div><div class="t">NEW</div><div class="d">The [+] menu, top right → New repository.</div></div>
+          <div class="arrow r" style="--d:.28s">→</div>
+          <div class="step r" style="--d:.32s"><div class="n">03</div><div class="t">SET UP</div><div class="d">Name: js-course · Public · ✓ Add a README file.</div></div>
+          <div class="arrow r" style="--d:.38s">→</div>
+          <div class="step r" style="--d:.42s"><div class="n">04</div><div class="t">CREATE</div><div class="d">Green button. Your first repo is live on the internet.</div></div>
+        </div>
+        <p class="note r" style="--d:.52s">The <span class="hl">README</span> is your project's front page — it renders right on the repo.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>First repo</span></div>
+    </section>
+
+    <!-- 17 NO TERMINAL -->
+    <section class="slide" id="s-noterm">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">17</div></div>
+      <div class="body">
+        <h1 class="h-xl r" style="--d:0s">Zero terminal.<br>All clicks.</h1>
+        <p class="lead r" style="--d:.16s; margin-top:30px">Git has a scary command-line reputation. <span class="hl">Skip it.</span> The full workflow is built into VS Code — today we click through all of it.</p>
+        <p class="r" style="--d:.26s; margin-top:16px; font-size:34px; font-weight:700; letter-spacing:.02em">[ CLONE ] &nbsp; · &nbsp; [ COMMIT ] &nbsp; · &nbsp; [ SYNC ]</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>No terminal</span></div>
+    </section>
+
+    <!-- 18 CLONE -->
+    <section class="slide" id="s-clone">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">18</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Clone: bring it down.</h1>
+        <div class="steps">
+          <div class="step r" style="--d:.12s"><div class="n">01</div><div class="t">COPY</div><div class="d">On GitHub: green [&lt;&gt; Code] button → copy the URL.</div></div>
+          <div class="arrow r" style="--d:.18s">→</div>
+          <div class="step r" style="--d:.22s"><div class="n">02</div><div class="t">CLONE</div><div class="d">VS Code → Source Control → [Clone Repository].</div></div>
+          <div class="arrow r" style="--d:.28s">→</div>
+          <div class="step r" style="--d:.32s"><div class="n">03</div><div class="t">PASTE</div><div class="d">Paste the URL, choose a folder on your disk.</div></div>
+          <div class="arrow r" style="--d:.38s">→</div>
+          <div class="step r" style="--d:.42s"><div class="n">04</div><div class="t">OPEN</div><div class="d">VS Code opens it. It now lives in both places.</div></div>
+        </div>
+        <p class="note r" style="--d:.52s">One clone per project, <span class="hl">ever</span>. After this, the loop takes over.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Clone</span></div>
+    </section>
+
+    <!-- 19 THE LOOP -->
+    <section class="slide" id="s-loop">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">19</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">The loop you'll run forever.</h1>
+        <div class="steps">
+          <div class="step r" style="--d:.14s"><div class="n">01</div><div class="t">EDIT</div><div class="d">Change files. Save.</div></div>
+          <div class="arrow r" style="--d:.20s">→</div>
+          <div class="step r" style="--d:.24s"><div class="n">02</div><div class="t">STAGE</div><div class="d">Press [+] — pick what goes into the snapshot.</div></div>
+          <div class="arrow r" style="--d:.30s">→</div>
+          <div class="step r" style="--d:.34s"><div class="n">03</div><div class="t">COMMIT</div><div class="d">Write one line about it. Press ✓.</div></div>
+          <div class="arrow r" style="--d:.40s">→</div>
+          <div class="step r" style="--d:.44s"><div class="n">04</div><div class="t">SYNC</div><div class="d">Send it up to GitHub.</div></div>
+        </div>
+        <p class="note r" style="--d:.54s">This is the whole job. <span class="hl">Every developer alive runs this loop</span> — some fifty times a day. ↺ and again.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>The loop</span></div>
+    </section>
+
+    <!-- 20 STAGE & COMMIT -->
+    <section class="slide" id="s-commit">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">20</div></div>
+      <div class="body" style="flex-direction:row; gap:54px; align-items:center">
+        <div class="r" style="flex:1.15; --d:.1s">
+          <svg viewBox="0 0 960 560" width="100%">
+            <!-- panel -->
+            <rect class="w-stroke" x="40" y="30" width="400" height="500" rx="6"/>
+            <text class="w-lab" x="60" y="68">SOURCE CONTROL</text>
+            <line class="w-sep" x1="40" y1="86" x2="440" y2="86"/>
+            <!-- message input -->
+            <rect class="w-thin" fill="#fff" x="60" y="106" width="360" height="46" rx="4"/>
+            <text class="w-mono" x="76" y="135" font-size="16">add hello.js▍</text>
+            <!-- commit button -->
+            <rect x="60" y="168" width="360" height="46" rx="4" fill="#0a0a0a"/>
+            <text x="240" y="197" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="16" font-weight="700">✓&nbsp;&nbsp;Commit</text>
+            <!-- staged -->
+            <text class="w-lab" x="60" y="256">STAGED CHANGES · 1</text>
+            <text class="w-mono" x="84" y="288" font-size="15">hello.js</text>
+            <text class="w-mono-m" x="368" y="288" font-size="15">−</text>
+            <text class="w-mono" x="404" y="288" font-size="15" font-weight="700">A</text>
+            <!-- changes -->
+            <text class="w-lab" x="60" y="342">CHANGES · 2</text>
+            <text class="w-mono" x="84" y="374" font-size="15">README.md</text>
+            <text class="w-mono" x="366" y="374" font-size="17" font-weight="700">+</text>
+            <text class="w-mono" x="404" y="374" font-size="15" font-weight="700">M</text>
+            <text class="w-mono" x="84" y="408" font-size="15">notes.md</text>
+            <text class="w-mono" x="366" y="408" font-size="17" font-weight="700">+</text>
+            <text class="w-mono" x="404" y="408" font-size="15" font-weight="700">M</text>
+            <!-- annotations -->
+            <text class="ann" x="520" y="368">[ 1 · STAGE ]</text>
+            <text class="ann-sub" x="520" y="390">press [+] — the file jumps up to Staged</text>
+            <line class="ann-line" x1="512" y1="372" x2="382" y2="372"/>
+            <text class="ann" x="520" y="126">[ 2 · MESSAGE ]</text>
+            <text class="ann-sub" x="520" y="148">one line: what did you do?</text>
+            <line class="ann-line" x1="512" y1="130" x2="426" y2="130"/>
+            <text class="ann" x="520" y="192">[ 3 · COMMIT ]</text>
+            <text class="ann-sub" x="520" y="214">snapshot taken — on your machine</text>
+            <line class="ann-line" x1="512" y1="196" x2="426" y2="196"/>
+            <text class="ann-sub" x="520" y="470">then [ SYNC ] sends it up → next slide</text>
+          </svg>
+        </div>
+        <div style="flex:.85">
+          <p class="lead r" style="--d:.16s"><span class="tag">[STAGE]</span> <span class="mut">— choose which changes enter the snapshot.</span></p>
+          <p class="lead r" style="--d:.24s; margin-top:24px"><span class="tag">[COMMIT]</span> <span class="mut">— take the snapshot, with a message.</span></p>
+          <p class="lead r" style="--d:.32s; margin-top:24px">Messages matter: <span class="hl">"add homework 1"</span> beats <span class="mut" style="text-decoration:line-through">"final_v2_REAL"</span>.</p>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Stage &amp; commit</span></div>
+    </section>
+
+    <!-- 21 SYNC -->
+    <section class="slide" id="s-sync">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">21</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">One button, both directions.</h1>
+        <div class="r" style="--d:.12s"><span class="btnmock"><span class="ic">↻</span> Sync Changes&nbsp;&nbsp;1↑</span></div>
+        <div class="vbox-row" style="max-width:900px">
+          <div class="vbox r" style="--d:.22s"><div class="vl">[ PUSH ↑ ]</div><div class="vv">Your commits go up<span class="sm">from your disk to GitHub</span></div></div>
+          <div class="vbox r" style="--d:.30s"><div class="vl">[ PULL ↓ ]</div><div class="vv">New commits come down<span class="sm">from GitHub to your disk</span></div></div>
+        </div>
+        <p class="note r" style="--d:.40s">A commit alone is <span class="hl">not</span> backed up — it lives only on your machine. Only after <span class="hl">[Sync]</span> is it on GitHub. Commit, sync, sleep well.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Sync</span></div>
+    </section>
+
+    <!-- 22 HISTORY -->
+    <section class="slide" id="s-history">
+      <div class="head"><div class="kick">[ 04 <span class="b">·</span> GIT IN VS CODE ]</div><div class="num">22</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Nothing is ever lost.</h1>
+        <div class="split" style="align-items:start; margin-top:36px">
+          <div class="r" style="--d:.14s">
+            <div class="boxlab">[ THE DIFF ] — click any changed file</div>
+            <div class="diffbox"><span class="cx">  function greet(name) {</span>
+<span class="dl">-   console.log("hi")</span>
+<span class="al">+   console.log("Hello, " + name)</span>
+<span class="cx">  }</span></div>
+          </div>
+          <div class="r" style="--d:.24s">
+            <div class="boxlab">[ TIMELINE ] — bottom of the Explorer</div>
+            <div class="tlbox">
+              <ul class="tl">
+                <li><div class="tt">add greeting</div><div class="ts">2 minutes ago</div></li>
+                <li><div class="tt">my first commit</div><div class="ts">yesterday</div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p class="note r" style="--d:.34s">Every commit that ever touched a file, one click away. <span class="hl">Committed work is a save point — experiment without fear.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>History</span></div>
+    </section>
+
+    <!-- 23 AI: MEET THEM -->
+    <section class="slide" id="s-ai">
+      <div class="head"><div class="kick">[ 05 <span class="b">·</span> AI TOOLS ]</div><div class="num">23</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">A senior dev who never sleeps.</h1>
+        <div class="grid c3">
+          <div class="cell r" style="--d:.12s"><div class="ct">[CLAUDE]</div><div class="cd">Chat: explain, debug, review. The free tier is plenty for this course.</div></div>
+          <div class="cell r" style="--d:.18s"><div class="ct">[CHATGPT]</div><div class="cd">Same idea — pick whichever you like. One is enough.</div></div>
+          <div class="cell r" style="--d:.24s"><div class="ct">[GITHUB COPILOT]</div><div class="cd">Autocomplete inside VS Code. Free for students via the Student Pack.</div></div>
+        </div>
+        <p class="lead r" style="--d:.34s; margin-top:36px">They write beginner code better than beginners. Useful — <span class="hl">and exactly the trap.</span> Next two slides: how to win.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Meet them</span></div>
+    </section>
+
+    <!-- 24 AI: WHAT TO ASK -->
+    <section class="slide" id="s-ask">
+      <div class="head"><div class="kick">[ 05 <span class="b">·</span> AI TOOLS ]</div><div class="num">24</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What to ask.</h1>
+        <ul class="reasons" style="margin-top:30px">
+          <li class="r" style="--d:.12s"><span class="rk">01</span><span><span class="pq">"Explain this error: [paste]"</span> <span class="mut">— red panic → plain words.</span></span></li>
+          <li class="r" style="--d:.18s"><span class="rk">02</span><span><span class="pq">"Explain variables like I'm brand new"</span> <span class="mut">— a private tutor, endlessly patient.</span></span></li>
+          <li class="r" style="--d:.24s"><span class="rk">03</span><span><span class="pq">"My code works — how would a pro improve it?"</span> <span class="mut">— review after it runs, not before.</span></span></li>
+          <li class="r" style="--d:.30s"><span class="rk">04</span><span><span class="pq">"Give me 3 exercises on today's topic"</span> <span class="mut">— infinite practice, on tap.</span></span></li>
+        </ul>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>What to ask</span></div>
+    </section>
+
+    <!-- 25 AI: THE RULES -->
+    <section class="slide" id="s-rules">
+      <div class="head"><div class="kick">[ 05 <span class="b">·</span> AI TOOLS ]</div><div class="num">25</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Tutor. Not ghostwriter.</h1>
+        <div class="cols2">
+          <div class="c r" style="--d:.14s">
+            <div class="lbl">[ ALWAYS ]</div>
+            <ul>
+              <li>Type every line yourself</li>
+              <li>Ask <b>why</b>, not just <b>fix</b></li>
+              <li>Be able to explain what you keep</li>
+            </ul>
+          </div>
+          <div class="c r" style="--d:.22s">
+            <div class="lbl">[ NEVER ]</div>
+            <ul>
+              <li>Paste homework, submit the answer</li>
+              <li>Accept code you don't understand</li>
+              <li>Let autocomplete think for you — not in week one</li>
+            </ul>
+          </div>
+        </div>
+        <p class="note r" style="--d:.32s">This course builds a skill inside <span class="hl">your</span> head. AI can speed that up — or replace it. Same tool, opposite outcomes. <span class="hl">You choose.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>The rules</span></div>
+    </section>
+
+    <!-- 26 RECAP -->
+    <section class="slide" id="s-recap">
+      <div class="head"><div class="kick">[ RECAP ]</div><div class="num">26</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Today you…</h1>
+        <ul class="recap">
+          <li class="r" style="--d:.10s"><span class="rn">01</span><span>Built a real environment — <span style="font-weight:600">VS Code · Node · DevTools · extensions</span>.</span></li>
+          <li class="r" style="--d:.16s"><span class="rn">02</span><span>Wrote your first JavaScript — <span style="font-weight:600">console.log · math · let / const</span>.</span></li>
+          <li class="r" style="--d:.22s"><span class="rn">03</span><span>Opened your GitHub — account, <span style="font-weight:600">[js-course]</span> repo, README.</span></li>
+          <li class="r" style="--d:.28s"><span class="rn">04</span><span>Ran the loop with zero commands: <span style="font-weight:600">edit → stage → commit → sync</span>.</span></li>
+          <li class="r" style="--d:.34s"><span class="rn">05</span><span>Hired an AI tutor — <span style="font-weight:600">on your terms</span>.</span></li>
+        </ul>
+        <p class="teaser r" style="--d:.44s"><span class="hl">The bench is built. The first cuts are made.</span><br><span class="mut">[WORKSHOP 02] — decisions (if), repetition (loops) &amp; your first mini-app.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Recap</span></div>
+    </section>
+
+    <!-- 27 HOMEWORK -->
+    <section class="slide" id="s-hw">
+      <div class="head"><div class="kick">[ HOMEWORK ]</div><div class="num">27</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Prove the pipeline works.</h1>
+        <ul class="recap" style="margin-top:24px">
+          <li class="r" style="--d:.10s"><span class="rn">01</span><span>Install everything from today — editor, Node, the four extensions.</span></li>
+          <li class="r" style="--d:.16s"><span class="rn">02</span><span>Create <span style="font-weight:600">[js-course]</span> on GitHub · clone it in VS Code.</span></li>
+          <li class="r" style="--d:.22s"><span class="rn">03</span><span>Add <span style="font-weight:600">hello.js</span> → a <span style="font-weight:600">const</span> with your name + <span class="pq" style="font-size:22px">console.log(`Hello, ${name}!`)</span></span></li>
+          <li class="r" style="--d:.28s"><span class="rn">04</span><span>Stage → commit <span style="font-weight:600">"my first commit"</span> → sync.</span></li>
+          <li class="r" style="--d:.34s"><span class="rn">05</span><span>Send me the repo link.</span></li>
+        </ul>
+        <p class="note r" style="--d:.44s">If the link opens and hello.js is there — <span class="hl">your entire toolchain works</span>. That's the whole assignment.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 01</span><span>Homework</span></div>
+    </section>
+
+    <!-- 28 END -->
+    <section class="slide" id="s-end">
+      <div class="body" style="justify-content:center">
+        <div class="kick r" style="--d:0s">[ END <span class="b">·</span> WORKSHOP 01 ]</div>
+        <div class="end-q r" style="--d:.08s; margin-top:36px">QUESTIONS?</div>
+        <div class="rule r" style="--d:.16s"></div>
+      </div>
+      <div class="foot">
+        <span class="motif">&gt; console.log("see you next time")</span>
+        <span>JavaScript · Workshop 01</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- overlay nav UI -->
+<div class="ui">
+  <span class="count" id="count">01 / 28</span>
+  <div class="prog-track"><div class="prog" id="prog"></div></div>
+  <div class="btns">
+    <button id="prev" aria-label="Previous">‹</button>
+    <button id="next" aria-label="Next">›</button>
+  </div>
+</div>
+<div class="hint" id="hint">← → to navigate</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var count = document.getElementById('count');
+  var prog  = document.getElementById('prog');
+  var hint  = document.getElementById('hint');
+  var cur = 0;
+
+  /* opening brackets on every slide */
+  slides.forEach(function(s){
+    var l = document.createElement('div'); l.className = 'brk l';
+    var r = document.createElement('div'); r.className = 'brk r';
+    s.appendChild(l); s.appendChild(r);
+  });
+
+  function fit(){
+    var s = Math.min(window.innerWidth/1440, window.innerHeight/900);
+    stage.style.transform = 'translate(-50%,-50%) scale('+s+')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  function goTo(i){
+    i = Math.max(0, Math.min(slides.length-1, i));
+    slides[cur].classList.remove('active');
+    cur = i;
+    var s = slides[cur];
+    void s.offsetWidth;           /* reflow so reveal + bracket anims re-run */
+    s.classList.add('active');
+    count.textContent = String(i+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+    prog.style.width = (i/(slides.length-1)*100) + '%';
+  }
+  function nextS(){ goTo(cur+1); }
+  function prevS(){ goTo(cur-1); }
+
+  document.getElementById('next').addEventListener('click', nextS);
+  document.getElementById('prev').addEventListener('click', prevS);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); nextS(); }
+    else if(e.key===' '){ e.preventDefault(); nextS(); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevS(); }
+    else if(e.key==='Home'){ goTo(0); }
+    else if(e.key==='End'){ goTo(slides.length-1); }
+  });
+  /* touch swipe */
+  var tx=0;
+  document.addEventListener('touchstart', function(e){ tx=e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    var dx=e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx)>50){ dx<0 ? nextS() : prevS(); }
+  }, {passive:true});
+
+  setTimeout(function(){ hint.style.opacity='0'; }, 4000);
+  goTo(0);
+})();
+</script>
