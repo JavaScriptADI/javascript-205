@@ -1,1 +1,6 @@
-# javascript-206
+# JavaScript 206
+
+## Homeworks
+- [Homework 1](./homeworks/homework_1.md)
+
+[Book](https://eloquentjavascript.net/)
