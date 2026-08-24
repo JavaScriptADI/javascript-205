@@ -1,4 +1,4 @@
-# JavaScript 206
+# JavaScript 205
 
 ## Homeworks
 - [Homework 1](./homeworks/homework_1.md)
