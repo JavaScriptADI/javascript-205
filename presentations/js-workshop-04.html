@@ -1,0 +1,445 @@
+<!-- JavaScript Workshop 04 — Arrays & Objects deck. Self-contained. Use ← → / Space to navigate. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript · Workshop 04</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --mute:#7a7a7a;
+    --line:#e3e3e3;
+    --line2:#111;
+    --paper:#ffffff;
+    --display:'Coolvetica Compressed','Coolvetica',Anton,'Arial Narrow',sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{background:var(--paper); color:var(--ink); font-family:var(--body); -webkit-font-smoothing:antialiased; overflow:hidden}
+
+  .viewport{position:fixed; inset:0; overflow:hidden; background:var(--paper)}
+  .stage{position:absolute; top:50%; left:50%; width:1440px; height:900px; transform-origin:center center; transform:translate(-50%,-50%)}
+
+  .slide{position:absolute; inset:0; opacity:0; pointer-events:none; padding:90px 100px; display:flex; flex-direction:column}
+  .slide.active{opacity:1; pointer-events:auto}
+
+  .brk{position:absolute; top:60px; width:24px; height:780px; border:2.5px solid var(--ink); pointer-events:none}
+  .brk.l{left:36px; border-right:0}
+  .brk.r{right:36px; border-left:0}
+  @keyframes brkopen{from{height:0} to{height:780px}}
+  .slide.active .brk{animation:brkopen .65s cubic-bezier(.25,.8,.25,1) both}
+
+  .head{display:flex; justify-content:space-between; align-items:flex-start}
+  .kick{font-size:15px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+  .kick .b{color:var(--mute)}
+  .num{font-family:var(--display); font-size:30px; letter-spacing:.04em; color:var(--mute); line-height:1}
+
+  .foot{position:absolute; left:100px; right:100px; bottom:54px; border-top:1px solid var(--line); padding-top:16px;
+        display:flex; justify-content:space-between; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute)}
+
+  .body{flex:1; display:flex; flex-direction:column; justify-content:center}
+
+  h1{font-family:var(--display); font-weight:400; text-transform:uppercase; line-height:.92; letter-spacing:.005em}
+  .h-xl{font-size:108px}
+  .h-lg{font-size:84px}
+  .h-md{font-size:64px}
+  .lead{font-size:27px; line-height:1.5; color:#222; max-width:62ch}
+  .lead .hl{color:var(--ink); font-weight:600}
+  .mut{color:var(--mute)}
+  .tag{display:inline-block; font-weight:600; letter-spacing:.04em}
+
+  @keyframes rise{from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:none}}
+  .slide .r{opacity:0}
+  .slide.active .r{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:var(--d,0s)}
+
+  .title-wrap{display:flex; flex-direction:column; justify-content:center; height:100%}
+  .title-wrap .kick{margin-bottom:40px}
+  .big{font-family:var(--display); font-size:200px; line-height:.9; letter-spacing:.005em}
+  .rule{height:2px; background:var(--ink); margin:30px 0}
+  .subline{font-size:30px; color:#222; font-weight:500}
+  .motif{font-family:var(--mono); font-size:22px; color:var(--mute); text-transform:none; letter-spacing:0}
+
+  .steps{display:flex; gap:22px; margin-top:44px}
+  .step{flex:1; border:1.5px solid var(--ink); padding:26px 24px; min-height:158px; position:relative}
+  .step .n{font-family:var(--display); font-size:38px; line-height:1}
+  .step .t{font-size:20px; font-weight:700; margin-top:13px; letter-spacing:.03em}
+  .step .d{font-size:15px; color:var(--mute); margin-top:7px; line-height:1.45}
+  .arrow{align-self:center; font-size:28px; color:var(--mute)}
+
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:40px; border:1.5px solid var(--ink)}
+  .cols2 .c{padding:30px 34px}
+  .cols2 .c:first-child{border-right:1.5px solid var(--ink)}
+  .cols2 .lbl{font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:16px}
+  .cols2 ul{list-style:none}
+  .cols2 li{font-size:21px; line-height:1.7; padding-left:24px; position:relative}
+  .cols2 li::before{content:"—"; position:absolute; left:0; color:var(--mute)}
+
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:1fr; gap:0; margin-top:40px;
+        border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink)}
+  .grid.c3{grid-template-columns:repeat(3,1fr)}
+  .cell{border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); padding:26px 24px; min-height:170px}
+  .cell .ct{font-size:19px; font-weight:700; letter-spacing:.04em}
+  .cell .cd{font-size:16px; color:var(--mute); margin-top:10px; line-height:1.5}
+
+  .split{display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; margin-top:30px}
+  .reasons{list-style:none}
+  .reasons li{font-size:23px; line-height:1.45; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:18px}
+  .reasons li:first-child{border-top:1px solid var(--line)}
+  .reasons .rk{font-family:var(--display); font-size:26px; color:var(--mute); min-width:40px}
+  .pq{font-family:var(--mono); font-size:21px; font-weight:500}
+  .bigcode{border:1.5px solid var(--ink); padding:40px 38px}
+  .bigcode .lab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:22px}
+  .bigcode code{font-family:var(--mono); font-size:26px; display:block; line-height:1.7; white-space:pre}
+
+  .code{font-family:var(--mono); border:1.5px solid var(--ink); padding:34px 40px; font-size:27px; line-height:1.75; white-space:pre; overflow-x:auto}
+  .code .kw{font-weight:700}
+  .code .com{color:var(--mute)}
+  .code .str{color:var(--ink)}
+  .out{margin-top:22px; border-left:3px solid var(--ink); padding:14px 0 14px 22px}
+  .out .ol{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:8px}
+  .out .ov{font-family:var(--mono); font-size:27px}
+  .note{font-size:21px; color:#222; margin-top:26px; line-height:1.55; max-width:80ch}
+  .note .hl{font-weight:600}
+  .codewrap{display:grid; grid-template-columns:1fr; gap:0; margin-top:24px}
+
+  .mtab{border:1.5px solid var(--ink); margin-top:26px}
+  .mrow{display:grid; grid-template-columns:1.2fr 56px 1fr; align-items:center; padding:16px 34px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:24px}
+  .mrow:last-child{border-bottom:0}
+  .mrow .ex{font-weight:500}
+  .mrow .ar{color:var(--mute); text-align:center}
+  .mrow .re{display:flex; justify-content:space-between; align-items:center; gap:14px}
+  .mrow .rc{font-size:15px; color:var(--mute); font-family:var(--mono); white-space:nowrap}
+
+  .vbox-row{display:flex; gap:26px; margin-top:32px}
+  .vbox{border:1.5px solid var(--ink); padding:0; flex:1}
+  .vbox .vl{font-size:14px; letter-spacing:.14em; text-transform:uppercase; padding:12px 20px; border-bottom:1.5px solid var(--ink); color:var(--mute)}
+  .vbox .vv{font-size:26px; font-weight:600; padding:24px 20px; line-height:1.3}
+  .vbox .vv .sm{display:block; font-size:16px; font-weight:400; color:var(--mute); margin-top:8px}
+
+  .btnmock{display:inline-flex; align-items:center; gap:14px; background:var(--ink); color:#fff; font-size:24px; font-weight:600;
+           padding:20px 44px; margin-top:34px; letter-spacing:.02em}
+  .btnmock .ic{font-size:26px}
+
+  .diffbox{border:1.5px solid var(--ink); font-family:var(--mono); font-size:21px; line-height:2; padding:26px 32px; white-space:pre; overflow-x:auto}
+  .diffbox .cx{color:#444}
+  .diffbox .dl{color:var(--mute); text-decoration:line-through}
+  .diffbox .al{font-weight:700}
+  .boxlab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:14px}
+  .tlbox{border:1.5px solid var(--ink); padding:28px 32px}
+  .tl{list-style:none; margin-left:8px; border-left:2px solid var(--ink); padding-left:26px}
+  .tl li{position:relative; padding:12px 0}
+  .tl li::before{content:""; position:absolute; left:-33px; top:22px; width:12px; height:12px; background:var(--ink); border-radius:50%}
+  .tl .tt{font-family:var(--mono); font-size:21px; font-weight:600}
+  .tl .ts{font-size:15px; color:var(--mute); margin-top:4px}
+
+  .recap{list-style:none; margin-top:30px}
+  .recap li{font-size:25px; line-height:1.4; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:20px}
+  .recap li:first-child{border-top:1px solid var(--line)}
+  .recap .rn{font-family:var(--display); font-size:28px; color:var(--mute); min-width:44px}
+  .teaser{margin-top:32px; font-size:23px}
+  .teaser .hl{font-weight:600}
+
+  .mock{display:flex; justify-content:center; margin-top:26px}
+  .mock svg{display:block; width:100%; height:auto}
+  .w-stroke{fill:#fff; stroke:var(--ink); stroke-width:2.5}
+  .w-thin{stroke:var(--ink); stroke-width:1.5}
+  .w-sep{stroke:var(--ink); stroke-width:1.5}
+  .w-bar{fill:var(--line)}
+  .w-barink{fill:var(--ink)}
+  .w-lab{font-family:var(--body); font-size:11px; letter-spacing:.14em; fill:var(--mute)}
+  .w-txt{font-family:var(--body); font-size:13px; font-weight:700; fill:var(--ink)}
+  .w-mono{font-family:var(--mono); font-size:13px; fill:var(--ink)}
+  .w-mono-m{font-family:var(--mono); font-size:13px; fill:var(--mute)}
+  .ann{font-family:var(--body); font-weight:700; font-size:17px; letter-spacing:.04em; fill:var(--ink)}
+  .ann-sub{font-family:var(--body); font-size:14px; fill:var(--mute)}
+  .ann-line{stroke:var(--ink); stroke-width:1.5}
+  .w-bcirc{fill:#fff; stroke:var(--ink); stroke-width:2}
+  .w-badge{font-family:var(--body); font-weight:700; font-size:14px; fill:var(--ink); text-anchor:middle; dominant-baseline:central}
+
+  .end-q{font-family:var(--display); font-size:200px; line-height:.85}
+
+  .ui{position:fixed; left:0; right:0; bottom:0; height:46px; display:flex; align-items:center; gap:18px; padding:0 20px; z-index:50; pointer-events:none}
+  .ui .prog-track{flex:1; height:2px; background:var(--line)}
+  .ui .prog{height:2px; background:var(--ink); width:0; transition:width .4s ease}
+  .ui .count{font-family:var(--mono); font-size:13px; color:var(--mute); letter-spacing:.1em}
+  .ui .btns{display:flex; gap:8px; pointer-events:auto}
+  .ui button{font-family:var(--body); font-size:16px; width:34px; height:30px; border:1px solid var(--ink); background:#fff; cursor:pointer; line-height:1}
+  .ui button:hover{background:var(--ink); color:#fff}
+  .hint{position:fixed; bottom:60px; right:24px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); z-index:50; transition:opacity .6s; pointer-events:none}
+</style>
+
+<div class="viewport">
+  <div class="stage" id="stage">
+
+    <!-- TITLE -->
+    <section class="slide active" id="s-title">
+      <div class="title-wrap">
+        <div class="kick r" style="--d:0s">[ JAVASCRIPT <span class="b">·</span> WORKSHOP 04 ]</div>
+        <div class="big r" style="--d:.08s">ARRAYS &amp; OBJECTS</div>
+        <div class="rule r" style="--d:.16s"></div>
+        <div class="subline r" style="--d:.22s">Practical patterns for collections and structured data</div>
+      </div>
+      <div class="foot">
+        <span class="motif">&gt; console.log([1,2,3])</span>
+        <span>Workshop 04 · Arrays &amp; Objects</span>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="slide" id="s-overview">
+      <div class="head"><div class="kick">[ TODAY ]</div><div class="num">02</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">What we'll cover</h1>
+        <p class="lead r" style="--d:.12s; margin-top:22px">Concepts, syntax, and common operations for arrays and objects. Hands-on examples and short exercises.</p>
+        <div class="grid c3">
+          <div class="cell r" style="--d:.20s"><div class="ct">Arrays</div><div class="cd">Creation, indexing, methods (map, filter, reduce), iteration.</div></div>
+          <div class="cell r" style="--d:.24s"><div class="ct">Objects</div><div class="cd">Literals, properties, methods, dot vs bracket access, destructuring.</div></div>
+          <div class="cell r" style="--d:.28s"><div class="ct">Patterns</div><div class="cd">Nested structures, cloning, immutability, practical examples.</div></div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Overview</span></div>
+    </section>
+
+    <!-- ARRAYS BASICS -->
+    <section class="slide" id="s-arrays">
+      <div class="head"><div class="kick">[ ARRAYS ]</div><div class="num">03</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What is an array?</h1>
+        <p class="lead r" style="--d:.12s; margin-top:18px">An ordered list of values. Use arrays when order matters or you have a collection of items.</p>
+        <div class="codewrap r" style="--d:.22s">
+          <div class="code"><span class="kw">const</span> nums = [1, 2, 3, 4]
+
+<span class="kw">console</span>.log(nums[0])  <span class="com">// 1</span>
+<span class="kw">console</span>.log(nums.length) <span class="com">// 4</span></div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Arrays</span></div>
+    </section>
+
+    <!-- ARRAY METHODS -->
+    <section class="slide" id="s-array-methods">
+      <div class="head"><div class="kick">[ ARRAYS · METHODS ]</div><div class="num">04</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Common array methods</h1>
+        <div class="grid">
+          <div class="cell r" style="--d:.10s"><div class="ct">push/pop</div><div class="cd">Add/remove at the end</div></div>
+          <div class="cell r" style="--d:.14s"><div class="ct">shift/unshift</div><div class="cd">Remove/add at the start</div></div>
+          <div class="cell r" style="--d:.18s"><div class="ct">forEach</div><div class="cd">Run a function for each element</div></div>
+          <div class="cell r" style="--d:.22s"><div class="ct">map</div><div class="cd">Transform each element → new array</div></div>
+          <div class="cell r" style="--d:.26s"><div class="ct">filter</div><div class="cd">Keep elements that match a test</div></div>
+          <div class="cell r" style="--d:.30s"><div class="ct">reduce</div><div class="cd">Accumulate values into a single result</div></div>
+        </div>
+        <div class="code r" style="--d:.36s">// example: map + filter
+const names = ["Ana","Bob","Cara","Dan"]
+const short = names.filter(n =&gt; n.length &lt;= 3).map(n =&gt; n.toUpperCase())
+console.log(short)  // ["ANA","BOB"]</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Array methods</span></div>
+    </section>
+
+    <!-- OBJECTS BASICS -->
+    <section class="slide" id="s-objects">
+      <div class="head"><div class="kick">[ OBJECTS ]</div><div class="num">05</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What is an object?</h1>
+        <p class="lead r" style="--d:.12s; margin-top:18px">A collection of key:value pairs. Use objects to model entities with named properties.</p>
+        <div class="codewrap r" style="--d:.22s">
+          <div class="code">const user = { name: "Maya", age: 30, roles: ["admin","editor"] }
+
+console.log(user.name)    // Maya
+console.log(user['age'])  // 30</div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Objects</span></div>
+    </section>
+
+    <!-- OBJECT METHODS & DESTRUCTURING -->
+    <section class="slide" id="s-obj-methods">
+      <div class="head"><div class="kick">[ OBJECTS · PATTERNS ]</div><div class="num">06</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Access, methods, destructuring</h1>
+        <div class="cols2 r" style="--d:.12s">
+          <div class="c"><div class="lbl">Access</div>
+            <ul>
+              <li>dot notation: user.name</li>
+              <li>bracket notation: user['name'] (dynamic keys)</li>
+            </ul>
+          </div>
+          <div class="c"><div class="lbl">Destructuring</div>
+            <ul>
+              <li>const {name, age} = user</li>
+              <li>const [first, second] = array</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code r" style="--d:.26s">// method on object
+const cart = { items: [1,2], add(item){ this.items.push(item) } }
+cart.add(3)
+console.log(cart.items) // [1,2,3]</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Patterns</span></div>
+    </section>
+
+    <!-- ITERATION -->
+    <section class="slide" id="s-iteration">
+      <div class="head"><div class="kick">[ ITERATION ]</div><div class="num">07</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Looping over data</h1>
+        <div class="grid">
+          <div class="cell r" style="--d:.10s"><div class="ct">for</div><div class="cd">classic indexed loop</div></div>
+          <div class="cell r" style="--d:.14s"><div class="ct">for...of</div><div class="cd">iterate values (arrays, iterables)</div></div>
+          <div class="cell r" style="--d:.18s"><div class="ct">for...in</div><div class="cd">iterate keys (objects)</div></div>
+          <div class="cell r" style="--d:.22s"><div class="ct">Object.keys/values/entries</div><div class="cd">Work with object pairs</div></div>
+        </div>
+        <div class="code r" style="--d:.28s">const data = [{id:1},{id:2}]
+for(const item of data) console.log(item.id)
+
+const obj = {a:1,b:2}
+for(const key of Object.keys(obj)) console.log(key, obj[key])</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Iteration</span></div>
+    </section>
+
+    <!-- NESTED STRUCTURES -->
+    <section class="slide" id="s-nested">
+      <div class="head"><div class="kick">[ NESTED ]</div><div class="num">08</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Arrays of objects and nested data</h1>
+        <p class="lead r" style="--d:.12s; margin-top:18px">Common pattern: array of objects (e.g., list of users). Use map/filter/reduce to process.</p>
+        <div class="code r" style="--d:.22s">const users = [ {id:1, name:'Ana'}, {id:2, name:'Ben'} ]
+const names = users.map(u =&gt; u.name)
+console.log(names) // ['Ana','Ben']</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Nested</span></div>
+    </section>
+
+    <!-- MUTABILITY & COPYING -->
+    <section class="slide" id="s-mutation">
+      <div class="head"><div class="kick">[ MUTABILITY ]</div><div class="num">09</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Don't mutate when you shouldn't</h1>
+        <div class="cols2 r" style="--d:.12s">
+          <div class="c"><div class="lbl">Shallow copy</div>
+            <ul>
+              <li>Arrays: [...arr] or arr.slice()</li>
+              <li>Objects: {...obj} or Object.assign({}, obj)</li>
+            </ul>
+          </div>
+          <div class="c"><div class="lbl">Deep copy</div>
+            <ul>
+              <li>structuredClone(obj) (modern)</li>
+              <li>JSON.parse(JSON.stringify(obj)) — lossy for functions/dates</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note r" style="--d:.26s">Prefer returning new arrays/objects from functions instead of mutating inputs — makes reasoning and debugging easier.</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Immutability</span></div>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section class="slide" id="s-examples">
+      <div class="head"><div class="kick">[ EXAMPLES ]</div><div class="num">10</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Small examples</h1>
+        <div class="code r" style="--d:.12s">// count words in an array
+const words = ['red','blue','red','green']
+const counts = words.reduce((acc,w) =&gt; { acc[w] = (acc[w] || 0) + 1; return acc }, {})
+console.log(counts) // {red:2, blue:1, green:1}
+
+// find by id
+const found = users.find(u =&gt; u.id === 2)
+console.log(found)</div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Examples</span></div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section class="slide" id="s-exercises">
+      <div class="head"><div class="kick">[ EXERCISES ]</div><div class="num">11</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Try these in the console</h1>
+        <div class="recap r" style="--d:.12s">
+          <li>1. Given [1,2,3,4], produce [1,4,9,16] using map.</li>
+          <li>2. Filter users with age &gt;= 18 from an array of user objects.</li>
+          <li>3. Reduce an array of orders to a total price.</li>
+          <li>4. Clone an object and change one nested value without mutating the original.</li>
+        </div>
+        <p class="note r" style="--d:.24s">Work in pairs for 8 minutes — then we'll review solutions together.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Exercises</span></div>
+    </section>
+
+    <!-- RECAP -->
+    <section class="slide" id="s-recap">
+      <div class="head"><div class="kick">[ RECAP ]</div><div class="num">12</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Takeaways</h1>
+        <ul class="recap r" style="--d:.12s">
+          <li><span class="rn">01</span>Arrays are ordered lists — use map/filter/reduce for transformations.</li>
+          <li><span class="rn">02</span>Objects hold named properties — use dot/bracket access and destructuring.</li>
+          <li><span class="rn">03</span>Prefer immutable updates and shallow/deep copying where needed.</li>
+          <li><span class="rn">04</span>Practice iteration patterns: for...of, Object.keys, map, reduce.</li>
+        </ul>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 04</span><span>Recap</span></div>
+    </section>
+
+    <!-- END / Q -->
+    <section class="slide" id="s-end">
+      <div class="title-wrap">
+        <div class="big r" style="--d:.08s">QUESTIONS?</div>
+        <div class="rule r" style="--d:.16s"></div>
+        <div class="subline r" style="--d:.22s">Ready for live exercises and code review</div>
+      </div>
+      <div class="foot"><span class="motif">&gt; console.log('done')</span><span>Workshop 04 · End</span></div>
+    </section>
+
+  </div>
+
+  <div class="ui">
+    <div class="prog-track"><div class="prog" id="prog"></div></div>
+    <div class="count" id="count">1 / 12</div>
+    <div class="btns">
+      <button id="prev">◀</button>
+      <button id="next">▶</button>
+    </div>
+  </div>
+  <div class="hint">Use ← → or Space</div>
+</div>
+
+<script>
+  (function(){
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let idx = slides.findIndex(s => s.classList.contains('active'));
+    if(idx < 0) idx = 0; // fallback
+    function show(i){
+      i = Math.max(0, Math.min(i, slides.length-1));
+      slides.forEach((s, j) => s.classList.toggle('active', j===i));
+      const prog = document.getElementById('prog');
+      const count = document.getElementById('count');
+      prog.style.width = Math.round(((i+1)/slides.length)*100) + '%';
+      count.textContent = (i+1) + ' / ' + slides.length;
+      idx = i;
+      location.hash = 'slide-' + (i+1);
+    }
+    document.getElementById('prev').addEventListener('click', ()=> show(idx-1));
+    document.getElementById('next').addEventListener('click', ()=> show(idx+1));
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); show(idx+1) }
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); show(idx-1) }
+    });
+    // support hash navigation
+    window.addEventListener('hashchange', ()=>{
+      const m = location.hash.match(/slide-(\d+)/);
+      if(m) show(Number(m[1]) - 1);
+    });
+    // initial from hash
+    const m = location.hash.match(/slide-(\d+)/);
+    if(m) show(Number(m[1]) - 1); else show(idx);
+  })();
+</script>
