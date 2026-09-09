@@ -7,5 +7,6 @@
 - [Homework 3](https://github.com/JavaScriptADI/javascript-205-homework-3.git)
 - [Homework 4](https://github.com/JavaScriptADI/javascript-205-homework-4.git)
 - [Homework 5](https://github.com/JavaScriptADI/javascript-205-homework-5.git)
+- [Homework 6](https://github.com/JavaScriptADI/javascript-205-homework-6.git)
 
 [Book](https://eloquentjavascript.net/)
