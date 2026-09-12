@@ -1,0 +1,11 @@
+JavaScript Homework 5 - Project Overview and Discussion
+
+This project explores advanced JavaScript concepts, focusing on algorithmic implementation from scratch, higher-order array methods, data aggregation, and recursion. Below is a detailed technical discussion of each exercise implemented in this assignment.
+
+## Technical Discussion of Exercises
+
+* *Custom Array Filtering (Exercise 5):* Replicating native behaviors without built-in abstractions is crucial for algorithmic understanding. This exercise required building a custom filter(array, test) function using a standard for loop and conditional if statements instead of the native .filter() method. It validates custom callback logic against both numerical conditions (divisibility using modulo) and string string-length checks.
+* *Array Methods and Callbacks (Exercise 6):* Utilizing functional programming techniques on structured datasets of objects (students). It demonstrates the practical application of .map() for data transformation, .filter() for condition-based subset extraction, .find() for target searching, .some() and .every() for boolean array validation, and .reduce() for numerical aggregation and maximum-value tracking.
+* *Text Processing and Aggregation (Exercise 7):* Processing raw string data into workable structures using .split(" "). It utilizes .reduce() to construct dynamic frequency-mapping objects from scratch, showcasing how accumulators track occurrences and locate string parameters based on length metrics.
+* *Recursion and Base Cases (Exercise 8):* Exploring self-referential functions where execution halts via explicit base conditions. This section implements mathematical digit extraction (sumDigits), recursive sequential printing (countUp), and custom exponential calculation (power) without iterative loops.
+* *Custom Map and Reduce Implementation (Bonus - Exercise 9):* Expanding on custom method creation, this task builds native equivalents (myMap and myReduce) using traditional loops. It proves how higher-order abstractions operate under the hood by iterating through arrays and passing transformation callbacks manually.
