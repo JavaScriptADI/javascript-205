@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // const btn = document.querySelector("button");
+
+        // btn.addEventListener("mouseenter", () => {
+        //     btn.style.color = "red";
+        //     document.body.style.background = "transparent";
+
+        // });
+
+        // btn.addEventListener("mouseleave", () => {
+        //     document.body.style.background = "green";
+        // });
+
+
+        for (let i = 0; i < 10; i++) {
+            const cube = document.createElement("div");
+            cube.style.width = "10px";
+            cube.style.height = "10px";
+            cube.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+            document.body.append(cube);
+        }
+        // setInterval(() => {
+        //     for (const div of document.querySelectorAll("div")) {
+        //         div.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+        //     }
+        // }, 0);
+
+    </script>
+</body>
+</html>
