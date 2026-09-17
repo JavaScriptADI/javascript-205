@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: #fff8ec;
+    color: #3b2412;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.game {
+    width: min(420px, 100% - 32px);
+    padding: 32px 0;
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+}
+
+h2 {
+    margin: 32px 0 12px;
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#score {
+    margin: 0;
+    font-size: 44px;
+    font-weight: 800;
+}
+
+#per-click {
+    margin: 4px 0 24px;
+    color: #8a6a4f;
+}
+
+#coin {
+    width: 180px;
+    height: 180px;
+    border: 6px solid #3b2412;
+    border-radius: 50%;
+    background: #ffe2b8;
+    font-size: 96px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+#coin:hover {
+    background: #ffd699;
+}
+
+/* Task 3 adds and removes this class */
+.pop {
+    animation: pop 150ms ease-out;
+}
+
+@keyframes pop {
+    50% {
+        transform: scale(1.12);
+    }
+}
+
+#shop {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.upgrade {
+    padding: 12px 16px;
+    border: 2px solid #3b2412;
+    border-radius: 10px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.upgrade:hover {
+    background: #ffe2b8;
+}
+
+/* Task 6 switches buttons off */
+button:disabled,
+button:disabled:hover {
+    border-color: #c9b8a6;
+    background: #eee4d8;
+    color: #a8927c;
+    cursor: not-allowed;
+}
+
+.race {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 2px dashed #c9b8a6;
+}
+
+#race-button {
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 10px;
+    background: #3b2412;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#race-result {
+    min-height: 1.5em;
+    font-weight: 700;
+}
