@@ -1,0 +1,1453 @@
+<!-- JavaScript Workshop 09 — The DOM: find, change, react, create, with live mini pages and Coin Clicker. Self-contained. Use ← → / Space to navigate. Selftest: open with #selftest in a 1440x900 window. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript · Workshop 09</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --mute:#7a7a7a;
+    --line:#e3e3e3;
+    --line2:#111;
+    --paper:#ffffff;
+    --display:'Coolvetica Compressed','Coolvetica',Anton,'Arial Narrow',sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{background:var(--paper); color:var(--ink); font-family:var(--body); -webkit-font-smoothing:antialiased; overflow:hidden}
+
+  .viewport{position:fixed; inset:0; overflow:hidden; background:var(--paper)}
+  .stage{position:absolute; top:50%; left:50%; width:1440px; height:900px; transform-origin:center center; transform:translate(-50%,-50%)}
+
+  .slide{position:absolute; inset:0; opacity:0; pointer-events:none; padding:90px 100px; display:flex; flex-direction:column}
+  .slide.active{opacity:1; pointer-events:auto}
+
+  .brk{position:absolute; top:60px; width:24px; height:780px; border:2.5px solid var(--ink); pointer-events:none}
+  .brk.l{left:36px; border-right:0}
+  .brk.r{right:36px; border-left:0}
+  @keyframes brkopen{from{height:0} to{height:780px}}
+  .slide.active .brk{animation:brkopen .65s cubic-bezier(.25,.8,.25,1) both}
+
+  .head{display:flex; justify-content:space-between; align-items:flex-start}
+  .kick{font-size:15px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+  .kick .b{color:var(--mute)}
+  .num{font-family:var(--display); font-size:30px; letter-spacing:.04em; color:var(--mute); line-height:1}
+
+  .foot{position:absolute; left:100px; right:100px; bottom:54px; border-top:1px solid var(--line); padding-top:16px;
+        display:flex; justify-content:space-between; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute)}
+
+  .body{flex:1; display:flex; flex-direction:column; justify-content:center}
+
+  h1{font-family:var(--display); font-weight:400; text-transform:uppercase; line-height:.92; letter-spacing:.005em}
+  .h-xl{font-size:108px}
+  .h-lg{font-size:84px}
+  .h-md{font-size:64px}
+  .lead{font-size:27px; line-height:1.5; color:#222; max-width:62ch}
+  .lead .hl{color:var(--ink); font-weight:600}
+  .mut{color:var(--mute)}
+  .tag{display:inline-block; font-weight:600; letter-spacing:.04em}
+
+  @keyframes rise{from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:none}}
+  .slide .r{opacity:0}
+  .slide.active .r{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:var(--d,0s)}
+
+  .title-wrap{display:flex; flex-direction:column; justify-content:center; height:100%}
+  .title-wrap .kick{margin-bottom:40px}
+  .big{font-family:var(--display); font-size:200px; line-height:.9; letter-spacing:.005em}
+  .rule{height:2px; background:var(--ink); margin:30px 0}
+  .subline{font-size:30px; color:#222; font-weight:500}
+  .motif{font-family:var(--mono); font-size:22px; color:var(--mute); text-transform:none; letter-spacing:0}
+
+  .steps{display:flex; gap:22px; margin-top:44px}
+  .step{flex:1; border:1.5px solid var(--ink); padding:26px 24px; min-height:158px; position:relative}
+  .step .n{font-family:var(--display); font-size:38px; line-height:1}
+  .step .t{font-size:20px; font-weight:700; margin-top:13px; letter-spacing:.03em}
+  .step .d{font-size:15px; color:var(--mute); margin-top:7px; line-height:1.45}
+  .arrow{align-self:center; font-size:28px; color:var(--mute)}
+
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:40px; border:1.5px solid var(--ink)}
+  .cols2 .c{padding:30px 34px}
+  .cols2 .c:first-child{border-right:1.5px solid var(--ink)}
+  .cols2 .lbl{font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:16px}
+  .cols2 ul{list-style:none}
+  .cols2 li{font-size:21px; line-height:1.7; padding-left:24px; position:relative}
+  .cols2 li::before{content:"—"; position:absolute; left:0; color:var(--mute)}
+
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:1fr; gap:0; margin-top:40px;
+        border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink)}
+  .grid.c3{grid-template-columns:repeat(3,1fr)}
+  .cell{border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); padding:26px 24px; min-height:170px}
+  .cell .ct{font-size:19px; font-weight:700; letter-spacing:.04em}
+  .cell .cd{font-size:16px; color:var(--mute); margin-top:10px; line-height:1.5}
+
+  .split{display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; margin-top:30px}
+  .reasons{list-style:none}
+  .reasons li{font-size:23px; line-height:1.45; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:18px}
+  .reasons li:first-child{border-top:1px solid var(--line)}
+  .reasons .rk{font-family:var(--display); font-size:26px; color:var(--mute); min-width:40px}
+  .pq{font-family:var(--mono); font-size:21px; font-weight:500}
+  .bigcode{border:1.5px solid var(--ink); padding:40px 38px}
+  .bigcode .lab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:22px}
+  .bigcode code{font-family:var(--mono); font-size:26px; display:block; line-height:1.7; white-space:pre}
+
+  .code{font-family:var(--mono); border:1.5px solid var(--ink); padding:34px 40px; font-size:27px; line-height:1.75; white-space:pre; overflow-x:auto}
+  .code .kw{font-weight:700}
+  .code .com{color:var(--mute)}
+  .code .str{color:var(--ink)}
+  .out{margin-top:22px; border-left:3px solid var(--ink); padding:14px 0 14px 22px}
+  .out .ol{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:8px}
+  .out .ov{font-family:var(--mono); font-size:27px}
+  .note{font-size:21px; color:#222; margin-top:26px; line-height:1.55; max-width:80ch}
+  .note .hl{font-weight:600}
+  .codewrap{display:grid; grid-template-columns:1fr; gap:0; margin-top:24px}
+
+  .mtab{border:1.5px solid var(--ink); margin-top:26px}
+  .mrow{display:grid; grid-template-columns:1.2fr 56px 1fr; align-items:center; padding:16px 34px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:24px}
+  .mrow:last-child{border-bottom:0}
+  .mrow .ex{font-weight:500}
+  .mrow .ar{color:var(--mute); text-align:center}
+  .mrow .re{display:flex; justify-content:space-between; align-items:center; gap:14px}
+  .mrow .rc{font-size:15px; color:var(--mute); font-family:var(--mono); white-space:nowrap}
+
+  .vbox-row{display:flex; gap:26px; margin-top:32px}
+  .vbox{border:1.5px solid var(--ink); padding:0; flex:1}
+  .vbox .vl{font-size:14px; letter-spacing:.14em; text-transform:uppercase; padding:12px 20px; border-bottom:1.5px solid var(--ink); color:var(--mute)}
+  .vbox .vv{font-size:26px; font-weight:600; padding:24px 20px; line-height:1.3}
+  .vbox .vv .sm{display:block; font-size:16px; font-weight:400; color:var(--mute); margin-top:8px}
+
+  .btnmock{display:inline-flex; align-items:center; gap:14px; background:var(--ink); color:#fff; font-size:24px; font-weight:600;
+           padding:20px 44px; margin-top:34px; letter-spacing:.02em}
+  .btnmock .ic{font-size:26px}
+
+  .diffbox{border:1.5px solid var(--ink); font-family:var(--mono); font-size:21px; line-height:2; padding:26px 32px; white-space:pre; overflow-x:auto}
+  .diffbox .cx{color:#444}
+  .diffbox .dl{color:var(--mute); text-decoration:line-through}
+  .diffbox .al{font-weight:700}
+  .boxlab{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:14px}
+  .tlbox{border:1.5px solid var(--ink); padding:28px 32px}
+  .tl{list-style:none; margin-left:8px; border-left:2px solid var(--ink); padding-left:26px}
+  .tl li{position:relative; padding:12px 0}
+  .tl li::before{content:""; position:absolute; left:-33px; top:22px; width:12px; height:12px; background:var(--ink); border-radius:50%}
+  .tl .tt{font-family:var(--mono); font-size:21px; font-weight:600}
+  .tl .ts{font-size:15px; color:var(--mute); margin-top:4px}
+
+  .recap{list-style:none; margin-top:30px}
+  .recap li{font-size:25px; line-height:1.4; padding:18px 0; border-bottom:1px solid var(--line); display:flex; gap:20px}
+  .recap li:first-child{border-top:1px solid var(--line)}
+  .recap .rn{font-family:var(--display); font-size:28px; color:var(--mute); min-width:44px}
+  .teaser{margin-top:32px; font-size:23px}
+  .teaser .hl{font-weight:600}
+
+  .mock{display:flex; justify-content:center; margin-top:26px}
+  .mock svg{display:block; width:100%; height:auto}
+  .w-stroke{fill:#fff; stroke:var(--ink); stroke-width:2.5}
+  .w-thin{stroke:var(--ink); stroke-width:1.5}
+  .w-sep{stroke:var(--ink); stroke-width:1.5}
+  .w-bar{fill:var(--line)}
+  .w-barink{fill:var(--ink)}
+  .w-lab{font-family:var(--body); font-size:11px; letter-spacing:.14em; fill:var(--mute)}
+  .w-txt{font-family:var(--body); font-size:13px; font-weight:700; fill:var(--ink)}
+  .w-mono{font-family:var(--mono); font-size:13px; fill:var(--ink)}
+  .w-mono-m{font-family:var(--mono); font-size:13px; fill:var(--mute)}
+  .ann{font-family:var(--body); font-weight:700; font-size:17px; letter-spacing:.04em; fill:var(--ink)}
+  .ann-sub{font-family:var(--body); font-size:14px; fill:var(--mute)}
+  .ann-line{stroke:var(--ink); stroke-width:1.5}
+  .w-bcirc{fill:#fff; stroke:var(--ink); stroke-width:2}
+  .w-badge{font-family:var(--body); font-weight:700; font-size:14px; fill:var(--ink); text-anchor:middle; dominant-baseline:central}
+
+  .end-q{font-family:var(--display); font-size:200px; line-height:.85}
+
+  .ui{position:fixed; left:0; right:0; bottom:0; height:46px; display:flex; align-items:center; gap:18px; padding:0 20px; z-index:50; pointer-events:none}
+  .ui .prog-track{flex:1; height:2px; background:var(--line)}
+  .ui .prog{height:2px; background:var(--ink); width:0; transition:width .4s ease}
+  .ui .count{font-family:var(--mono); font-size:13px; color:var(--mute); letter-spacing:.1em}
+  .ui .btns{display:flex; gap:8px; pointer-events:auto}
+  .ui button{font-family:var(--body); font-size:16px; width:34px; height:30px; border:1px solid var(--ink); background:#fff; cursor:pointer; line-height:1}
+  .ui button:hover{background:var(--ink); color:#fff}
+  .hint{position:fixed; bottom:60px; right:24px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); z-index:50; transition:opacity .6s; pointer-events:none}
+
+  /* ---- steps engine ---- */
+  /* state classes set by the engine (never write them by hand) */
+  .slide .st-hid{visibility:hidden !important; opacity:0 !important; animation:none !important}
+  .slide.active .st-vis{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .ui .count .dots{margin-left:10px; letter-spacing:.12em; color:var(--ink)}
+  /* the hint moves onto the progress bar so it never overlaps the slide footer at 1440x900 */
+  .hint{bottom:16px; right:auto; left:20px; line-height:14px; padding-right:12px; background:var(--paper)}
+  /* widget library (slide authors use only these; extra CSS goes in a scoped <style> inside the section) */
+  .trace{display:grid; grid-template-columns:1.15fr .85fr; gap:28px; align-items:start; margin-top:20px}
+  .trace.even{grid-template-columns:1fr 1fr}
+  .trace .code{font-size:20px; line-height:1.7; padding:24px 34px}
+  .ln{display:block; margin:0 -14px; padding:0 14px 0 10px; border-left:4px solid transparent; transition:background .25s,border-color .25s}
+  .ln.on{background:#f0f0f0; border-left-color:var(--ink)}
+  .ln.dim{color:var(--mute)}
+  .panel{display:flex; flex-direction:column; gap:14px}
+  .plab{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:6px}
+  .vars{display:flex; gap:10px; flex-wrap:wrap}
+  .var{border:1.5px solid var(--ink); padding:10px 14px; min-width:104px; transition:background .25s,color .25s}
+  .var .k{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute)}
+  .var .v{font-family:var(--mono); font-size:22px; font-weight:600; margin-top:4px}
+  .var.on{background:var(--ink); color:#fff}
+  .var.on .k{color:#ccc}
+  .outp{border:1.5px solid var(--ink); padding:12px 18px; min-height:96px}
+  .outp .ol{font-family:var(--mono); font-size:20px; line-height:1.6}
+  .outp .ol.err{font-weight:700}
+  .cells{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .cel{border:1.5px solid var(--ink); padding:6px 12px; font-family:var(--mono); font-size:20px; min-width:50px; text-align:center; transition:all .25s}
+  .cel.on{background:var(--ink); color:#fff}
+  .cel.keep{border-width:2.5px; font-weight:700}
+  .cel.drop{color:var(--mute); border-color:var(--line); text-decoration:line-through}
+  .cel.ghost{border-style:dashed; color:var(--mute)}
+  .frames{display:flex; flex-direction:column-reverse; gap:6px; min-height:120px; justify-content:flex-end}
+  .frame{border:1.5px solid var(--ink); padding:8px 14px; font-family:var(--mono); font-size:19px; display:flex; justify-content:space-between; gap:12px}
+  .frame.on{background:var(--ink); color:#fff}
+  .frame .ret{color:var(--mute)}
+  .frame.on .ret{color:#ccc}
+  .scope{border:1.5px solid var(--ink); padding:12px 16px}
+  .scope .sl{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:6px}
+  .scope .sv{font-family:var(--mono); font-size:20px; line-height:1.6}
+  .scope .scope{margin-top:10px; border-style:dashed}
+  .scope.on{background:#f0f0f0; box-shadow:inset 4px 0 0 var(--ink)}
+  .stepnote{font-size:19px; line-height:1.45; color:#222; min-height:58px}
+  .stepnote .hl{font-weight:600}
+  .mrow.on{background:#f0f0f0; box-shadow:inset 4px 0 0 var(--ink)}
+  /* ---- /steps engine ---- */
+
+  /* ---- quiz widget (workshops 08–09): code | four answers, vote bar, reveal ----
+     .opt gets data-cls="N:right" or "N:wrong"; .vote and the console share one .stack cell so nothing jumps */
+  .quiz{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:40px; align-items:start; margin-top:26px}
+  .quiz .code{font-size:23px; line-height:1.7; padding:26px 32px}
+  .opts{display:grid; grid-template-columns:1fr; gap:14px}
+  .opt{display:flex; align-items:center; gap:20px; border:1.5px solid var(--ink); padding:14px 22px; font-family:var(--mono); font-size:22px; min-height:78px; transition:background .3s,color .3s,border-color .3s}
+  .opt .L{font-family:var(--display); font-size:32px; width:50px; height:50px; flex:none; border:1.5px solid var(--ink); display:grid; place-items:center; line-height:1; transition:border-color .3s}
+  .opt.right{background:var(--ink); color:#fff}
+  .opt.right .L{border-color:#fff}
+  .opt.right::after{content:"✓"; margin-left:auto; font-family:var(--body); font-size:30px; font-weight:700}
+  .opt.wrong{color:var(--mute); border-color:var(--line)}
+  .opt.wrong .L{border-color:var(--line)}
+  .stack{display:grid; margin-top:18px}
+  .stack > *{grid-area:1/1}
+  .vote{border:1.5px dashed var(--ink); padding:16px 22px; font-size:21px; font-weight:600}
+  .vote .vs{font-size:15px; font-weight:400; color:var(--mute); margin-top:4px}
+  .tbar{height:8px; background:var(--line); margin-top:14px; overflow:hidden}
+  .tfill{height:100%; background:var(--ink); transform-origin:left center}
+  @keyframes drain{from{transform:scaleX(1)} to{transform:scaleX(0)}}
+  .slide.active .vote.st-vis .tfill{animation:drain 20s linear forwards}
+  .quiz .outp{min-height:0}
+  .quiz .outp .ol{font-size:22px}
+  /* ---- /quiz widget ---- */
+
+  /* ---- live mini page (workshop 09): a small browser window with real HTML inside ---- */
+  .mini{border:1.5px solid var(--ink); background:#fff}
+  .mini-bar{display:flex; align-items:center; gap:7px; padding:9px 14px; border-bottom:1.5px solid var(--ink)}
+  .mini-bar i{width:11px; height:11px; border:1.5px solid var(--ink); border-radius:50%}
+  .mini-bar span{margin-left:10px; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute)}
+  .mini-body{padding:18px 24px; min-height:120px; font-family:Georgia,'Times New Roman',serif; font-size:22px; line-height:1.4}
+  .mini-body h1{font-family:Georgia,'Times New Roman',serif; font-size:34px; font-weight:700; text-transform:none; letter-spacing:0; line-height:1.2; margin-bottom:8px}
+  .mini-body p{margin:4px 0}
+  .mini-body ul{padding-left:28px}
+  .mini-body button{font-family:var(--body); font-size:22px; padding:10px 22px; border:1.5px solid var(--ink); background:#fff; cursor:pointer}
+  .mini-body button:active{background:#f0f0f0}
+  /* ---- /live mini page ---- */
+
+  /* ---- embedded Coin Clicker (workshop 09) ---- */
+  .clicker{border:1.5px solid var(--ink); padding:22px 26px; text-align:center; background:#fff}
+  .clicker .c-title{font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute)}
+  .clicker .c-score{font-family:var(--display); font-size:64px; line-height:1; margin-top:8px}
+  .clicker .c-per{font-size:18px; color:var(--mute); margin-top:4px}
+  .clicker .c-coin{display:block; width:150px; height:150px; margin:16px auto; border:2.5px solid var(--ink); border-radius:50%; background:#fff; font-size:84px; line-height:1; cursor:pointer; user-select:none}
+  .clicker .c-coin:hover{background:#f0f0f0}
+  .clicker .pop{animation:cpop .15s ease-out}
+  @keyframes cpop{50%{transform:scale(1.12)}}
+  .clicker .c-shop{display:flex; flex-direction:column; gap:8px}
+  .clicker .c-upgrade{border:1.5px solid var(--ink); background:#fff; padding:10px 14px; font-family:var(--body); font-size:17px; font-weight:600; cursor:pointer}
+  .clicker .c-upgrade:hover{background:var(--ink); color:#fff}
+  .clicker .c-racebox{margin-top:14px; padding-top:14px; border-top:1.5px dashed var(--ink)}
+  .clicker .c-race{border:1.5px solid var(--ink); background:var(--ink); color:#fff; padding:10px 18px; font-family:var(--body); font-size:17px; font-weight:700; cursor:pointer}
+  .clicker button:disabled, .clicker button:disabled:hover{background:#fff; color:var(--mute); border-color:var(--line); cursor:not-allowed}
+  .clicker .c-result{min-height:26px; margin-top:8px; font-size:19px; font-weight:700}
+  /* ---- /embedded clicker ---- */
+</style>
+
+<div class="viewport">
+  <div class="stage" id="stage">
+
+    <!-- TITLE -->
+    <section class="slide active" id="s-title">
+      <div class="title-wrap">
+        <div class="kick r" style="--d:0s">[ JAVASCRIPT <span class="b">·</span> WORKSHOP 09 ]</div>
+        <div class="big r" style="--d:.08s">THE DOM</div>
+        <div class="rule r" style="--d:.16s"></div>
+        <div class="subline r" style="--d:.22s">JavaScript meets the page — find it, change it, react, create</div>
+      </div>
+      <div class="foot">
+        <span class="motif">&gt; document</span>
+        <span>Workshop 09</span>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="slide" id="s-overview">
+      <style>
+        #s-overview .grid{border-top:0; border-left:0; margin-top:30px}
+        #s-overview .cell{border-top:1.5px solid var(--ink); min-height:150px}
+        #s-overview .cell:first-child{border-left:1.5px solid var(--ink)}
+        #s-overview .note{margin-top:26px}
+      </style>
+      <div class="head"><div class="kick">[ TODAY ]</div><div class="num">02</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Workshop 09</h1>
+        <p class="lead r" style="--d:.12s; margin-top:20px">Until today your code only talked to the console. Today it talks to the <span class="hl">page</span>: find an element, change it, react to a click, and build new elements from an array.</p>
+        <div class="grid c3">
+          <div class="cell r" style="--d:.20s"><div class="ct">Warm-up + hack</div><div class="cd">One vote on Workshop 08, then we change a real website from the console.</div></div>
+          <div class="cell" data-show="1"><div class="ct">The DOM in four ideas</div><div class="cd">Find · change · react · create, with a vote after each one.</div></div>
+          <div class="cell" data-show="2"><div class="ct">Build + race</div><div class="cd">Coin Clicker, then a high-score round with a twist.</div></div>
+        </div>
+        <p class="note" data-show="3"><span class="hl">How the votes work:</span> same as last time. When the timer bar appears, everyone holds up 1, 2, 3 or 4 fingers at the same time. Then we reveal the answer and run the code — sometimes right here, on the slide.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Overview</span></div>
+    </section>
+
+    <!-- WARM-UP · FILTER VS FIND -->
+    <section class="slide" id="q-w1">
+      <div class="head"><div class="kick">[ WARM-UP ]</div><div class="num">03</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What does it print?</h1>
+        <div class="quiz r" style="--d:.12s">
+          <div>
+            <div class="code"><span class="ln"><span class="kw">const</span> users = [
+</span><span class="ln">  { name: <span class="str">"Ana"</span>,  age: 17 },
+</span><span class="ln">  { name: <span class="str">"Gio"</span>,  age: 21 },
+</span><span class="ln">  { name: <span class="str">"Nino"</span>, age: 25 },
+</span><span class="ln">]
+</span><span class="ln" data-on="2">console.log(users.filter(u =&gt; u.age &gt;= 18).length)
+</span><span class="ln" data-on="2">console.log(users.find(u =&gt; u.age &gt;= 18).name)
+</span></div>
+            <div class="stack">
+              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it</div><div class="tbar"><div class="tfill"></div></div></div>
+              <div data-show="2"><div class="plab">console</div><div class="outp"><div class="ol">2</div><div class="ol">Gio</div></div></div>
+            </div>
+          </div>
+          <div class="opts">
+            <div class="opt" data-cls="2:right"><span class="L">1</span><span>2 · Gio</span></div>
+            <div class="opt" data-cls="2:wrong"><span class="L">2</span><span>2 · Nino</span></div>
+            <div class="opt" data-cls="2:wrong"><span class="L">3</span><span>1 · Gio</span></div>
+            <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>undefined · Gio</span></div>
+          </div>
+        </div>
+        <p class="note" data-show="2"><span class="hl">filter always gives back an array</span>, so it has a length: Gio and Nino, 2. <span class="hl">find gives back the first match itself</span>, one object, so .name works: Gio.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Warm-up</span></div>
+    </section>
+
+    <!-- HOOK · HACK ANY WEBSITE -->
+    <section class="slide" id="s-hack">
+      <style>
+        #s-hack .bigcode{margin-top:30px}
+      </style>
+      <div class="head"><div class="kick">[ HOOK ]</div><div class="num">04</div></div>
+      <div class="body">
+        <h1 class="h-lg r" style="--d:0s">Hack any website</h1>
+        <div class="steps">
+          <div class="step r" style="--d:.12s"><div class="n">01</div><div class="t">OPEN</div><div class="d">Any site with a big headline: a news site, Wikipedia.</div></div>
+          <div class="arrow r" style="--d:.17s">→</div>
+          <div class="step r" style="--d:.20s"><div class="n">02</div><div class="t">CONSOLE</div><div class="d">F12, then the Console tab. On a Mac: ⌥⌘J.</div></div>
+          <div class="arrow r" style="--d:.25s">→</div>
+          <div class="step r" style="--d:.28s"><div class="n">03</div><div class="t">TYPE</div><div class="d">The line below. Type it, don't paste it.</div></div>
+          <div class="arrow r" style="--d:.33s">→</div>
+          <div class="step r" style="--d:.36s"><div class="n">04</div><div class="t">SCREENSHOT</div><div class="d">Proof. Then refresh the page.</div></div>
+        </div>
+        <div class="bigcode" data-show="1"><div class="lab">type it in the console · Chrome blocks pasting until you type allow pasting</div><code>document.querySelector(<b>"h1"</b>).textContent = <b>"I hacked this"</b></code></div>
+        <p class="note" data-show="2"><span class="hl">Only your screen changed.</span> Refresh and it's gone, and nothing on their server changed. But it proves today's big idea: <span class="hl">the page is objects, and JavaScript can change them.</span></p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Hook</span></div>
+    </section>
+
+    <!-- THE DOM TREE -->
+    <section class="slide" id="s-tree">
+      <style>
+        #s-tree .split{grid-template-columns:1fr 1fr; align-items:start; margin-top:36px}
+        #s-tree .code{font-size:24px; padding:30px 34px}
+        #s-tree .tree{display:flex; flex-direction:column; gap:12px}
+        #s-tree .node{margin-left:calc(var(--x) * 56px); align-self:flex-start; border:1.5px solid var(--ink); padding:10px 18px; font-family:var(--mono); font-size:22px; position:relative; transition:background .25s,color .25s}
+        #s-tree .node::before{content:""; position:absolute; left:-30px; top:50%; width:22px; border-top:1.5px solid var(--mute)}
+        #s-tree .node.root::before{display:none}
+        #s-tree .node .id{color:var(--mute)}
+        #s-tree .node.on{background:var(--ink); color:#fff}
+        #s-tree .node.on .id{color:#ccc}
+      </style>
+      <div class="head"><div class="kick">[ THE DOM ]</div><div class="num">05</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">The page is a tree of objects</h1>
+        <div class="split">
+          <div class="r" style="--d:.12s">
+            <div class="plab">what you write · index.html</div>
+            <div class="code"><span class="ln">&lt;body&gt;
+</span><span class="ln" data-on="1">  &lt;h1 id=<span class="str">"score"</span>&gt;0&lt;/h1&gt;
+</span><span class="ln" data-on="2">  &lt;button id=<span class="str">"coin"</span>&gt;🪙&lt;/button&gt;
+</span><span class="ln" data-on="3">  &lt;ul id=<span class="str">"shop"</span>&gt;&lt;/ul&gt;
+</span><span class="ln">&lt;/body&gt;
+</span></div>
+          </div>
+          <div class="r" style="--d:.2s">
+            <div class="plab">what the browser builds · the DOM</div>
+            <div class="tree">
+              <div class="node root" style="--x:0">document</div>
+              <div class="node" style="--x:1">html</div>
+              <div class="node" style="--x:2">body</div>
+              <div class="node" data-on="1" style="--x:3">h1 <span class="id">#score</span></div>
+              <div class="node" data-on="2" style="--x:3">button <span class="id">#coin</span></div>
+              <div class="node" data-on="3" style="--x:3">ul <span class="id">#shop</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="note" data-show="4"><span class="hl">Every tag becomes an object</span> with properties you can read and change, and <span class="pq">document</span> is where you start. DOM = Document Object Model.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>The DOM</span></div>
+    </section>
+
+    <!-- QUERYSELECTOR -->
+    <section class="slide" id="s-select">
+      <style>
+        #s-select .code{font-size:24px; margin-top:34px}
+      </style>
+      <div class="head"><div class="kick">[ FIND IT ]</div><div class="num">06</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">querySelector — find an element</h1>
+        <p class="lead r" style="--d:.12s; margin-top:20px">You already know the selectors: <span class="hl">they are the same ones you write in CSS.</span></p>
+        <div class="code r" style="--d:.2s"><span class="ln" data-on="1">document.querySelector(<span class="str">"#score"</span>)       <span class="com">// by id</span>
+</span><span class="ln" data-on="2">document.querySelector(<span class="str">".price"</span>)       <span class="com">// by class — the FIRST match only</span>
+</span><span class="ln" data-on="3">document.querySelector(<span class="str">"button"</span>)       <span class="com">// by tag</span>
+</span><span class="ln" data-on="4">document.querySelectorAll(<span class="str">".price"</span>)    <span class="com">// ALL matches — a list you can forEach</span>
+</span></div>
+        <p class="note" data-show="5"><span class="hl">Nothing matches? You get null</span> — and then <span class="pq">null.textContent = …</span> or <span class="pq">null.addEventListener(…)</span> gives the red error you will see most this month: <span class="pq">Cannot set / Cannot read properties of null</span>.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Find it</span></div>
+    </section>
+
+    <!-- VOTE · SCRIPT IN HEAD -->
+    <section class="slide" id="q-head">
+      <style>
+        #q-head .codes{display:grid; grid-template-columns:5fr 7fr; gap:24px; margin-top:24px}
+        #q-head .code{font-size:20px; line-height:1.6; padding:20px 28px}
+        #q-head .row2{display:grid; grid-template-columns:1.4fr .6fr; gap:24px; margin-top:18px; align-items:start}
+        #q-head .opts{grid-template-columns:1fr 1fr}
+        #q-head .opt{min-height:64px; padding:10px 18px; font-size:19px}
+        #q-head .opt .L{width:42px; height:42px; font-size:26px}
+        #q-head .stack{margin-top:0}
+        #q-head .outp{min-height:0}
+        #q-head .notes{display:grid; margin-top:20px}
+        #q-head .notes > *{grid-area:1/1; margin-top:0}
+      </style>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 1 OF 4 ]</div><div class="num">07</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What does it print?</h1>
+        <div class="codes r" style="--d:.12s">
+          <div>
+            <div class="plab">index.html</div>
+            <div class="code"><span class="ln">&lt;head&gt;
+</span><span class="ln" data-on="3">  &lt;script src=<span class="str">"game.js"</span>&gt;&lt;/script&gt;
+</span><span class="ln">&lt;/head&gt;
+</span><span class="ln">&lt;body&gt;
+</span><span class="ln">  &lt;h1 id=<span class="str">"score"</span>&gt;0&lt;/h1&gt;
+</span><span class="ln">&lt;/body&gt;
+</span></div>
+          </div>
+          <div>
+            <div class="plab">game.js</div>
+            <div class="code"><span class="ln" data-on="2"><span class="kw">const</span> score = document.querySelector(<span class="str">"#score"</span>)
+</span><span class="ln" data-on="2">console.log(score)
+</span></div>
+          </div>
+        </div>
+        <div class="row2 r" style="--d:.2s">
+          <div class="opts">
+            <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>&lt;h1 id="score"&gt;0&lt;/h1&gt;</span></div>
+            <div class="opt" data-cls="2:wrong"><span class="L">2</span><span>"0"</span></div>
+            <div class="opt" data-cls="2:right"><span class="L">3</span><span>null</span></div>
+            <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>an error</span></div>
+          </div>
+          <div class="stack">
+            <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it</div><div class="tbar"><div class="tfill"></div></div></div>
+            <div data-show="2"><div class="plab">console</div><div class="outp"><div class="ol">null</div></div></div>
+          </div>
+        </div>
+        <div class="notes">
+          <p class="note" data-show="2" data-hide="3"><span class="hl">The browser reads the page top to bottom.</span> The script ran in the head, before the h1 existed, so there was nothing to find.</p>
+          <p class="note" data-show="3"><span class="hl">Fix:</span> <span class="pq">&lt;script src="game.js" defer&gt;&lt;/script&gt;</span> — defer means "run me after the page is built". Your Coin Clicker page already has it.</p>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Your turn</span></div>
+    </section>
+
+    <!-- TEXTCONTENT -->
+    <section class="slide" id="s-text">
+      <style>
+        #s-text .code{font-size:24px; margin-top:30px}
+      </style>
+      <div class="head"><div class="kick">[ CHANGE IT ]</div><div class="num">08</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">textContent — read and write the text</h1>
+        <div class="code r" style="--d:.12s"><span class="ln" data-on="1"><span class="kw">const</span> score = document.querySelector(<span class="str">"#score"</span>)
+</span><span class="ln" data-on="2">console.log(score.textContent)   <span class="com">// "0"</span>
+</span><span class="ln" data-on="3">score.textContent = 42           <span class="com">// the page now shows 42</span>
+</span><span class="ln" data-on="4">console.log(score.textContent)   <span class="com">// "42"</span>
+</span></div>
+        <div class="vbox-row r" style="--d:.2s">
+          <div class="vbox"><div class="vl">the page shows</div><div class="vv" data-at="0:0;3:42"></div></div>
+          <div class="vbox"><div class="vl">console</div><div class="vv"><span data-show="2">0</span> <span data-show="4">· 42</span></div></div>
+        </div>
+        <p class="note" data-show="4"><span class="hl">Reading textContent always gives you a string</span> — even after you wrote the number 42 into it. So keep your score in a number variable, and write it onto the page.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Change it</span></div>
+    </section>
+
+    <!-- VOTE · TEXTCONTENT (live mini page) -->
+    <section class="slide" id="q-text">
+      <style>
+        #q-text .quiz{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
+        #q-text .quiz .code{font-size:21px}
+        #q-text .opts{margin-top:18px}
+        #q-text .opt{min-height:60px; padding:10px 18px; font-size:20px}
+        #q-text .opt .L{width:42px; height:42px; font-size:26px}
+        #q-text .stack .note{margin-top:0}
+      </style>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 2 OF 4 ]</div><div class="num">09</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What will the page show?</h1>
+        <div class="quiz r" style="--d:.12s">
+          <div>
+            <div class="plab">game.js</div>
+            <div class="code"><span class="ln" data-on="2"><span class="kw">const</span> title = document.querySelector(<span class="str">"#title"</span>)
+</span><span class="ln" data-on="2">title.textContent = <span class="str">"Khinkali"</span>
+</span><span class="ln">
+</span><span class="ln" data-on="2"><span class="kw">const</span> price = document.querySelector(<span class="str">".price"</span>)
+</span><span class="ln" data-on="2">price.textContent = <span class="str">"1 ₾"</span>
+</span></div>
+            <div class="stack">
+              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it on the page</div><div class="tbar"><div class="tfill"></div></div></div>
+              <p class="note" data-show="2"><span class="hl">querySelector stops at the first match.</span> The second price never changed. For all of them: <span class="pq">querySelectorAll</span> + <span class="pq">forEach</span>.</p>
+            </div>
+          </div>
+          <div>
+            <div class="mini">
+              <div class="mini-bar"><i></i><i></i><i></i><span>the page</span></div>
+              <div class="mini-body"></div>
+              <template><h1 id="title">Menu</h1><p class="price">5 ₾</p><p class="price">7 ₾</p></template>
+            </div>
+            <div class="opts">
+              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>Khinkali · 1 ₾ · 1 ₾</span></div>
+              <div class="opt" data-cls="2:right"><span class="L">2</span><span>Khinkali · 1 ₾ · 7 ₾</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">3</span><span>Menu · 1 ₾ · 7 ₾</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>Khinkali · 5 ₾ · 1 ₾</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Your turn</span></div>
+    </section>
+
+    <!-- ADDEVENTLISTENER (live mini page) -->
+    <section class="slide" id="s-listen">
+      <style>
+        #s-listen .trace .code{font-size:20px}
+      </style>
+      <div class="head"><div class="kick">[ REACT ]</div><div class="num">10</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">addEventListener — run code on a click</h1>
+        <div class="trace r" style="--d:.12s">
+          <div class="code"><span class="ln" data-on="1"><span class="kw">const</span> like = document.querySelector(<span class="str">"#like"</span>)
+</span><span class="ln" data-on="2"><span class="kw">let</span> count = 0
+</span><span class="ln">
+</span><span class="ln" data-on="3">like.addEventListener(<span class="str">"click"</span>, () =&gt; {
+</span><span class="ln" data-on="5-6">  count++
+</span><span class="ln" data-on="5-6">  like.textContent = count
+</span><span class="ln" data-on="3">})
+</span><span class="ln">
+</span><span class="ln" data-on="4">console.log(<span class="str">"ready"</span>)
+</span></div>
+          <div class="panel">
+            <div class="stepnote" data-at="0:Three pieces: find the button, a counter, and a listener. Watch what runs now — and what does not.;1:querySelector finds the button. like is now that element object.;2:count starts at 0.;3:addEventListener stores the arrow function for later. The body does NOT run now — count is still 0.;4:The script goes on and prints ready. The script is finished, but the browser remembers the function.;5:Click! The browser calls the function: count++ makes 1, and the button shows 1.;6:Click again — the same function runs again: 2."></div>
+            <div class="mini">
+              <div class="mini-bar"><i></i><i></i><i></i><span>the page</span></div>
+              <div class="mini-body"></div>
+              <template><button id="like">0</button></template>
+            </div>
+            <div>
+              <div class="plab">console</div>
+              <div class="outp"><div class="ol" data-show="4">ready</div></div>
+            </div>
+          </div>
+        </div>
+        <p class="note" data-show="6"><span class="hl">Same idea as Workshop 08:</span> you hand over a function, and someone else calls it. Here the browser calls it, once per click. From step 3 on you can click the button yourself.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>React</span></div>
+    </section>
+
+    <!-- VOTE · THE CALLBACK TRAP (live, clickable) -->
+    <section class="slide" id="q-trap">
+      <style>
+        #q-trap .quiz .code{font-size:20px}
+        #q-trap .opts{margin-top:18px}
+        #q-trap .opt{min-height:60px; padding:10px 18px; font-size:21px}
+        #q-trap .opt .L{width:42px; height:42px; font-size:26px}
+        #q-trap .stack .note{margin-top:0}
+      </style>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 3 OF 4 ]</div><div class="num">11</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Three clicks. What does it say?</h1>
+        <div class="quiz r" style="--d:.12s">
+          <div>
+            <div class="code"><span class="ln"><span class="kw">let</span> count = 0
+</span><span class="ln"><span class="kw">const</span> btn = document.querySelector(<span class="str">"#btn"</span>)
+</span><span class="ln">
+</span><span class="ln"><span class="kw">function</span> addOne() {
+</span><span class="ln">  count++
+</span><span class="ln">  btn.textContent = <span class="str">"Clicked: "</span> + count
+</span><span class="ln">}
+</span><span class="ln">
+</span><span class="ln" data-on="2-3">btn.addEventListener(<span class="str">"click"</span>, <span data-at="0:addOne();3:addOne"></span>)
+</span></div>
+            <div class="stack">
+              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we load it and click 3 times</div><div class="tbar"><div class="tfill"></div></div></div>
+              <p class="note" data-show="2" data-hide="3"><span class="hl">addOne() ran once, right away</span>, and gave back undefined. So addEventListener got undefined, not a function. Click the button: nothing happens.</p>
+              <p class="note" data-show="3"><span class="hl">No parentheses on the callback.</span> Pass addOne itself, and the browser calls it on every click. Try it.</p>
+            </div>
+          </div>
+          <div>
+            <div class="mini">
+              <div class="mini-bar"><i></i><i></i><i></i><span>the page</span></div>
+              <div class="mini-body"></div>
+              <template><button id="btn">Clicked: 0</button></template>
+            </div>
+            <div class="opts">
+              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>Clicked: 3</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">2</span><span>Clicked: 4</span></div>
+              <div class="opt" data-cls="2:right"><span class="L">3</span><span>Clicked: 1</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>Clicked: 0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Your turn</span></div>
+    </section>
+
+    <!-- CREATEELEMENT + APPEND (live mini page) -->
+    <section class="slide" id="s-create">
+      <style>
+        #s-create .trace{grid-template-columns:1.3fr .7fr}
+        #s-create .trace .code{font-size:20px}
+        #s-create .var .v{font-size:19px}
+      </style>
+      <div class="head"><div class="kick">[ CREATE ]</div><div class="num">12</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">createElement + append — build from an array</h1>
+        <div class="trace r" style="--d:.12s">
+          <div class="code"><span class="ln" data-on="1"><span class="kw">const</span> dishes = [<span class="str">"Khinkali"</span>, <span class="str">"Khachapuri"</span>, <span class="str">"Lobio"</span>]
+</span><span class="ln" data-on="2"><span class="kw">const</span> menu = document.querySelector(<span class="str">"#menu"</span>)
+</span><span class="ln">
+</span><span class="ln">dishes.forEach(dish =&gt; {
+</span><span class="ln" data-on="3,6,7">  <span class="kw">const</span> li = document.createElement(<span class="str">"li"</span>)
+</span><span class="ln" data-on="4,6,7">  li.textContent = dish
+</span><span class="ln" data-on="5-7">  menu.append(li)
+</span><span class="ln">})
+</span></div>
+          <div class="panel">
+            <div class="stepnote" data-at="0:An array of dishes and an empty list on the page. Goal: one li per dish.;1:The data: three strings.;2:Find the empty ul on the page.;3:dish is Khinkali. createElement makes a brand new li — it exists only in memory, not on the page yet.;4:Give it its text. Still only in memory.;5:append puts it inside the ul. Now it is on the page.;6:dish is Khachapuri: a NEW li, its text, append. Two items.;7:dish is Lobio: one more new li. Three items, one per dish."></div>
+            <div>
+              <div class="plab">in memory, not on the page yet</div>
+              <div class="vars"><div class="var" data-on="3-4"><div class="k">li</div><div class="v" data-at="0:—;3:&lt;li&gt;&lt;/li&gt;;4:&lt;li&gt;Khinkali&lt;/li&gt;;5:—"></div></div></div>
+            </div>
+            <div class="mini">
+              <div class="mini-bar"><i></i><i></i><i></i><span>the page</span></div>
+              <div class="mini-body"></div>
+              <template><ul id="menu"></ul></template>
+            </div>
+          </div>
+        </div>
+        <p class="note" data-show="7">Create the element <span class="hl">inside</span> the loop: every dish gets its own new li.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Create</span></div>
+    </section>
+
+    <!-- VOTE · ONE LI (live mini page) -->
+    <section class="slide" id="q-list">
+      <style>
+        #q-list .quiz{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr)}
+        #q-list .quiz .code{font-size:20px}
+        #q-list .opts{margin-top:18px}
+        #q-list .opt{min-height:60px; padding:10px 16px; font-size:18px; gap:14px}
+        #q-list .opt .L{width:42px; height:42px; font-size:26px}
+        #q-list .stack .note{margin-top:0}
+      </style>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 4 OF 4 ]</div><div class="num">13</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">What will the list show?</h1>
+        <div class="quiz r" style="--d:.12s">
+          <div>
+            <div class="code"><span class="ln"><span class="kw">const</span> dishes = [<span class="str">"Khinkali"</span>, <span class="str">"Khachapuri"</span>, <span class="str">"Lobio"</span>]
+</span><span class="ln"><span class="kw">const</span> specials = document.querySelector(<span class="str">"#specials"</span>)
+</span><span class="ln" data-on="2"><span class="kw">const</span> li = document.createElement(<span class="str">"li"</span>)
+</span><span class="ln">
+</span><span class="ln">dishes.forEach(dish =&gt; {
+</span><span class="ln">  li.textContent = dish
+</span><span class="ln" data-on="2">  specials.append(li)
+</span><span class="ln">})
+</span></div>
+            <div class="stack">
+              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it on the page</div><div class="tbar"><div class="tfill"></div></div></div>
+              <p class="note" data-show="2"><span class="hl">There is only ONE li.</span> Appending it again moves it, it does not copy it, and it keeps the last text: Lobio. Create the element <span class="hl">inside</span> the loop.</p>
+            </div>
+          </div>
+          <div>
+            <div class="mini">
+              <div class="mini-bar"><i></i><i></i><i></i><span>the page</span></div>
+              <div class="mini-body"></div>
+              <template><ul id="specials"></ul></template>
+            </div>
+            <div class="opts">
+              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>Khinkali · Khachapuri · Lobio</span></div>
+              <div class="opt" data-cls="2:right"><span class="L">2</span><span>Lobio</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">3</span><span>Khinkali</span></div>
+              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>Lobio · Lobio · Lobio</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Your turn</span></div>
+    </section>
+
+    <!-- WHICH TOOL -->
+    <section class="slide" id="s-tools">
+      <style>
+        #s-tools .mtab{border:0; margin-top:30px}
+        #s-tools .mrow{border-left:1.5px solid var(--ink); border-right:1.5px solid var(--ink); padding:15px 34px; font-size:23px}
+        #s-tools .mrow:first-child{border-top:1.5px solid var(--ink)}
+        #s-tools .mrow:last-child{border-bottom:1.5px solid var(--ink)}
+      </style>
+      <div class="head"><div class="kick">[ THE DOM ]</div><div class="num">14</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Which tool do I need?</h1>
+        <div class="mtab">
+          <div class="mrow r" style="--d:.10s"><span class="ex">find an element</span><span class="ar">→</span><span class="re"><span>querySelector</span><span class="rc">…All for every match</span></span></div>
+          <div class="mrow r" style="--d:.14s"><span class="ex">change its text</span><span class="ar">→</span><span class="re"><span>textContent</span><span class="rc">always a string</span></span></div>
+          <div class="mrow r" style="--d:.18s"><span class="ex">change its look</span><span class="ar">→</span><span class="re"><span>classList.add / remove</span><span class="rc">Task 3</span></span></div>
+          <div class="mrow r" style="--d:.22s"><span class="ex">react to the user</span><span class="ar">→</span><span class="re"><span>addEventListener</span><span class="rc">no ()</span></span></div>
+          <div class="mrow r" style="--d:.26s"><span class="ex">make new elements</span><span class="ar">→</span><span class="re"><span>createElement + append</span><span class="rc">inside the loop</span></span></div>
+          <div class="mrow r" style="--d:.30s"><span class="ex">switch a button off</span><span class="ar">→</span><span class="re"><span>button.disabled = true</span><span class="rc">Task 6</span></span></div>
+        </div>
+        <p class="note r" style="--d:.36s">After the break you use every row of this table to build one game.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>The DOM</span></div>
+    </section>
+    <!-- BREAK -->
+    <section class="slide" id="s-break">
+      <style>
+        #s-break .split{grid-template-columns:1fr 1fr; align-items:center; margin-top:0}
+        #s-break .clock{font-family:var(--display); font-size:200px; line-height:.9; letter-spacing:.01em; margin-top:10px}
+        #s-break .clock.done{font-size:64px; letter-spacing:.02em}
+      </style>
+      <div class="head"><div class="kick">[ BREAK ]</div><div class="num">15</div></div>
+      <div class="body">
+        <div class="split">
+          <div>
+            <h1 class="h-lg r" style="--d:0s">10-minute break</h1>
+            <div class="clock r" id="break-clock" style="--d:.1s">10:00</div>
+            <p class="lead r" style="--d:.2s; margin-top:18px">Stretch, get water — or play. <span class="hl">This is what you'll build next.</span></p>
+          </div>
+          <div class="r" style="--d:.25s">
+            <div class="clicker">
+              <div class="c-title">Coin Clicker</div>
+              <div class="c-score">…</div>
+              <div class="c-per">…</div>
+              <button class="c-coin" aria-label="Collect a coin">🪙</button>
+              <div class="c-shop"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Break</span></div>
+    </section>
+
+    <!-- BUILD -->
+    <section class="slide" id="s-build">
+      <style>
+        #s-build .steps{margin-top:30px}
+        #s-build .step{min-height:130px; padding:20px}
+        #s-build .cols2{margin-top:30px}
+        #s-build .cols2 li{font-size:19px; line-height:1.6}
+        #s-build .cols2 .pq{font-size:18px}
+      </style>
+      <div class="head"><div class="kick">[ CLASS WORK ]</div><div class="num">16</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Build: Coin Clicker</h1>
+        <div class="steps">
+          <div class="step r" style="--d:.12s"><div class="n">01</div><div class="t">OPEN</div><div class="d">workshop_9/index.html in the browser.</div></div>
+          <div class="arrow r" style="--d:.16s">→</div>
+          <div class="step r" style="--d:.20s"><div class="n">02</div><div class="t">EDIT</div><div class="d">game.js, one task at a time.</div></div>
+          <div class="arrow r" style="--d:.24s">→</div>
+          <div class="step r" style="--d:.28s"><div class="n">03</div><div class="t">SAVE + REFRESH</div><div class="d">Compare with the Expected line.</div></div>
+          <div class="arrow r" style="--d:.32s">→</div>
+          <div class="step r" style="--d:.36s"><div class="n">04</div><div class="t">STUCK?</div><div class="d">DevTools Console: read the red error first. Then ask.</div></div>
+        </div>
+        <div class="cols2" data-show="1">
+          <div class="c"><div class="lbl">tasks 1–3 · the coin</div>
+            <ul>
+              <li>1 · show the score: <span class="pq">querySelector</span> + <span class="pq">textContent</span></li>
+              <li>2 · collect on click: <span class="pq">addEventListener</span></li>
+              <li>3 · make it bounce: <span class="pq">classList</span></li>
+            </ul>
+          </div>
+          <div class="c"><div class="lbl">tasks 4–6 · the shop</div>
+            <ul>
+              <li>4 · one button per upgrade: <span class="pq">createElement</span></li>
+              <li>5 · buy an upgrade</li>
+              <li>6 · grey out what you can't afford: <span class="pq">disabled</span></li>
+              <li><span class="mut">★ race mode, for the high-score round</span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="note" data-show="2">Work in pairs: one types, one reads the task out loud, swap after every task. The solution is in <span class="pq">workshop_9/solutions/</span>, but try first.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Class work</span></div>
+    </section>
+
+    <!-- HIGH-SCORE ROUND -->
+    <section class="slide" id="s-race">
+      <style>
+        #s-race .split{grid-template-columns:1.1fr .9fr; align-items:start; margin-top:0; gap:48px}
+        #s-race .rounds{display:grid; margin-top:24px}
+        #s-race .rounds > *{grid-area:1/1}
+        #s-race .round .lbl{font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-bottom:10px}
+        #s-race .round ul{list-style:none}
+        #s-race .round li{font-size:21px; line-height:1.5; padding:9px 0 9px 24px; position:relative; border-bottom:1px solid var(--line)}
+        #s-race .round li::before{content:"—"; position:absolute; left:0; color:var(--mute)}
+        #s-race .round .hl{font-weight:600}
+        #s-race .round .pq{font-size:19px}
+        #s-race .code{font-size:20px; padding:20px 26px; margin-top:16px}
+        #s-race .note{margin-top:14px}
+        #s-race .clicker .c-coin{width:120px; height:120px; font-size:66px; margin:10px auto}
+        #s-race .clicker .c-score{font-size:52px}
+      </style>
+      <div class="head"><div class="kick">[ HIGH-SCORE ROUND ]</div><div class="num">17</div></div>
+      <div class="body">
+        <div class="split">
+          <div>
+            <h1 class="h-md r" style="--d:0s">Race!</h1>
+            <div class="rounds">
+              <div class="round" data-hide="1">
+                <div class="lbl">round 1 · honest fingers</div>
+                <ul>
+                  <li>Race mode: 10 seconds, click as fast as you can.</li>
+                  <li>Buying upgrades mid-race is allowed. Is Extra hands worth it?</li>
+                  <li>Play in your own game (★) or in <span class="pq">workshop_9/solutions/index.html</span>.</li>
+                  <li>Call out your score. The top 3 play the final here, on the projector.</li>
+                </ul>
+              </div>
+              <div class="round" data-show="1">
+                <div class="lbl">round 2 · hackers' round</div>
+                <ul>
+                  <li>Remember the headline you changed at the start? <span class="hl">This page is objects too.</span></li>
+                  <li>Hint: every element has a <span class="pq">.click()</span> method.</li>
+                  <li>3 minutes. DevTools console. Beat the record.</li>
+                </ul>
+                <div data-show="2">
+                  <div class="code"><span class="ln"><span class="kw">const</span> coin = document.querySelector(<span class="str">"#coin"</span>)
+</span><span class="ln"><span class="kw">for</span> (<span class="kw">let</span> i = 0; i &lt; 100000; i++) coin.click()
+</span></div>
+                  <p class="note"><span class="hl">JavaScript can do anything a user can do on a page</span> — so never trust a score that comes from the browser.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="r" style="--d:.15s">
+            <div class="clicker">
+              <div class="c-title">Coin Clicker · the final</div>
+              <div class="c-score">…</div>
+              <div class="c-per">…</div>
+              <button class="c-coin" id="coin" aria-label="Collect a coin">🪙</button>
+              <div class="c-shop"></div>
+              <div class="c-racebox"><button class="c-race">Start 10-second race</button><div class="c-result"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>High-score round</span></div>
+    </section>
+
+    <!-- RECAP -->
+    <section class="slide" id="s-recap">
+      <div class="head"><div class="kick">[ RECAP ]</div><div class="num">18</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Today in five lines</h1>
+        <ul class="recap r" style="--d:.12s">
+          <li><span class="rn">01</span>The page is a tree of objects, and <span class="pq">document</span> is where you start.</li>
+          <li data-show="1"><span class="rn">02</span><span class="pq">querySelector</span> finds an element with a CSS selector — the first match.</li>
+          <li data-show="2"><span class="rn">03</span><span class="pq">textContent</span> and <span class="pq">classList</span> change what it shows and how it looks.</li>
+          <li data-show="3"><span class="rn">04</span><span class="pq">addEventListener</span> gives the browser a function to call later — no parentheses.</li>
+          <li data-show="4"><span class="rn">05</span><span class="pq">createElement</span> + <span class="pq">append</span> build new elements — a new one each time.</li>
+        </ul>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Recap</span></div>
+    </section>
+
+    <!-- HOMEWORK -->
+    <section class="slide" id="s-hw">
+      <div class="head"><div class="kick">[ HOMEWORK ]</div><div class="num">19</div></div>
+      <div class="body">
+        <h1 class="h-md r" style="--d:0s">Homework 8</h1>
+        <p class="lead r" style="--d:.12s; margin-top:22px">Still open: <span class="hl">github.com/JavaScriptADI/javascript-205-homework-8</span>, six exercises on callbacks and array methods. Exercise 2 is today's warm-up: filter or find?</p>
+        <div class="steps">
+          <div class="step r" style="--d:.22s"><div class="n">01</div><div class="t">FORK</div><div class="d">On GitHub: the Fork button, top right. You get your own copy of the repo.</div></div>
+          <div class="arrow r" style="--d:.27s">→</div>
+          <div class="step r" style="--d:.30s"><div class="n">02</div><div class="t">CLONE + BRANCH</div><div class="d">Clone your fork, then create a branch named after your GitHub username.</div></div>
+          <div class="arrow r" style="--d:.35s">→</div>
+          <div class="step r" style="--d:.38s"><div class="n">03</div><div class="t">ADD FILES</div><div class="d">Put exercise_1.js … exercise_6.js in submissions/&lt;your-username&gt;/.</div></div>
+          <div class="arrow r" style="--d:.43s">→</div>
+          <div class="step r" style="--d:.46s"><div class="n">04</div><div class="t">PUSH + PR</div><div class="d">Push and open a Pull Request. The review request is added for you.</div></div>
+        </div>
+        <p class="note r" style="--d:.56s"><span class="hl">Deadline: before Workshop 10.</span> Run every file with node and compare with the expected output before you push.</p>
+      </div>
+      <div class="foot"><span>JavaScript · Workshop 09</span><span>Homework</span></div>
+    </section>
+    <!-- END / Q -->
+    <section class="slide" id="s-end">
+      <div class="title-wrap">
+        <div class="big r" style="--d:.08s">QUESTIONS?</div>
+        <div class="rule r" style="--d:.16s"></div>
+        <div class="subline r" style="--d:.22s">Keep clicking — and keep your hacks to your own pages</div>
+      </div>
+      <div class="foot"><span class="motif">&gt; console.log('done')</span><span>Workshop 09 · End</span></div>
+    </section>
+  </div>
+
+  <div class="ui">
+    <div class="prog-track"><div class="prog" id="prog"></div></div>
+    <div class="count" id="count">1 / 20</div>
+    <div class="btns">
+      <button id="prev">◀</button>
+      <button id="next">▶</button>
+    </div>
+  </div>
+  <div class="hint">Use ← → or Space</div>
+</div>
+
+<script>
+  /* ---- steps engine ----
+     Declarative step-by-step reveals driven by data-attributes (see ENGINE.md).
+     State = (idx, k). The whole visual state is recomputed from k on every change. */
+  (function(){
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const SEL = '[data-show],[data-hide],[data-on],[data-cls],[data-at]';
+    const toInt = s => { const n = parseInt(s, 10); return Number.isNaN(n) ? null : n };
+
+    // "2,4-5,7-" -> { has(k), max }   ("a-" = a and every later step)
+    // Inner whitespace is stripped first ("2 - 3" == "2-3"); anything that still does not match
+    // (en dash, letters, ...) is ignored with a console.warn. ASCII hyphen only.
+    function parseSet(str, where){
+      const ranges = []; let max = 0;
+      String(str).split(',').forEach(raw => {
+        const part = raw.replace(/\s+/g, '');
+        if(part === '') return;
+        const m = part.match(/^(\d+)(?:-(\d*))?$/);
+        if(!m){ console.warn('steps: ignoring malformed data-on part "' + raw + '" in data-on="' + str + '"' + (where ? ' (' + where + ')' : '') + ' — use N, A-B or A- with an ASCII hyphen, no spaces'); return }
+        const a = +m[1];
+        const b = m[2] === undefined ? a : (m[2] === '' ? Infinity : +m[2]);
+        ranges.push([a, b]);
+        max = Math.max(max, a, Number.isFinite(b) ? b : a);
+      });
+      return { has: k => ranges.some(r => k >= r[0] && k <= r[1]), max };
+    }
+    // "3:keep;5:drop" -> [{n, v}] sorted by n (v is trimmed; may be '')
+    function parseKV(str){
+      const out = [];
+      String(str).split(';').forEach(part => {
+        const i = part.indexOf(':'); if(i < 0) return;
+        const n = toInt(part.slice(0, i).trim()); if(n === null) return;
+        out.push({ n, v: part.slice(i + 1).trim() });
+      });
+      return out.sort((a, b) => a.n - b.n);
+    }
+
+    // per-slide metadata: parsed items + max step
+    const meta = slides.map(slide => {
+      const items = []; let max = 0;
+      const where = el => '#' + slide.id + ' <' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + '>';
+      slide.querySelectorAll(SEL).forEach(el => {
+        const it = { el };
+        const sh = el.getAttribute('data-show'), hi = el.getAttribute('data-hide');
+        if(sh !== null){ it.show = toInt(sh) ?? 0; max = Math.max(max, it.show) }
+        if(hi !== null){ it.hide = toInt(hi) ?? 0; max = Math.max(max, it.hide) }
+        if(sh !== null || hi !== null){ it.vis = true; el.classList.remove('r') }
+        const on = el.getAttribute('data-on');
+        if(on !== null){ it.on = parseSet(on, where(el)); max = Math.max(max, it.on.max) }
+        const cls = el.getAttribute('data-cls');
+        if(cls !== null){
+          // class names must be single tokens (/^\S+$/); an empty or multi-word name is dropped
+          // and does not count towards max (classList.toggle would throw on it)
+          it.cls = parseKV(cls).filter(x => {
+            if(!x.v) return false;
+            if(!/^\S+$/.test(x.v)){ console.warn('steps: ignoring data-cls class name "' + x.v + '" in data-cls="' + cls + '" (' + where(el) + ') — class names are single tokens without spaces'); return false }
+            return true;
+          });
+          it.cls.forEach(x => { max = Math.max(max, x.n) });
+        }
+        const at = el.getAttribute('data-at');
+        if(at !== null){ it.at = parseKV(at); it.at.forEach(x => { max = Math.max(max, x.n) }) }
+        items.push(it);
+      });
+      return { items, max };
+    });
+
+    // ---- live mini pages (workshop 09) ----
+    // A runner rebuilds its slide's .mini-body from the <template>, then applies the effects of steps <= k,
+    // so the mini page depends only on k. The slide shows document.querySelector; runners use the mini
+    // page's own querySelector ($), never the deck's document.
+    function miniReset(slide){
+      const body = slide.querySelector('.mini-body');
+      body.replaceChildren(slide.querySelector('.mini template').content.cloneNode(true));
+      return s => body.querySelector(s);
+    }
+    const runners = {
+      'q-text': (slide, k) => {
+        const $ = miniReset(slide);
+        if(k < 2) return;
+        $('#title').textContent = 'Khinkali';
+        $('.price').textContent = '1 ₾';
+      },
+      's-listen': (slide, k) => {
+        const $ = miniReset(slide);
+        if(k < 3) return;
+        const like = $('#like');
+        let count = 0;
+        like.addEventListener('click', () => { count++; like.textContent = count });
+        if(k >= 5) like.click();
+        if(k >= 6) like.click();
+      },
+      'q-trap': (slide, k) => {
+        const $ = miniReset(slide);
+        if(k < 2) return;
+        const btn = $('#btn');
+        let count = 0;
+        function addOne(){ count++; btn.textContent = 'Clicked: ' + count }
+        if(k === 2) btn.addEventListener('click', addOne());   // the bug, for real: addOne runs now, undefined is passed
+        else btn.addEventListener('click', addOne);            // the fix
+      },
+      's-create': (slide, k) => {
+        const $ = miniReset(slide);
+        const menu = $('#menu');
+        ['Khinkali', 'Khachapuri', 'Lobio'].slice(0, Math.max(0, k - 4)).forEach(dish => {
+          const li = document.createElement('li');
+          li.textContent = dish;
+          menu.append(li);
+        });
+      },
+      'q-list': (slide, k) => {
+        const $ = miniReset(slide);
+        if(k < 2) return;
+        const specials = $('#specials');
+        const li = document.createElement('li');
+        ['Khinkali', 'Khachapuri', 'Lobio'].forEach(dish => { li.textContent = dish; specials.append(li) });
+      },
+    };
+    // hooks that run every time go() shows a slide, keyed by slide id
+    const onEnter = {};
+
+    // ---- break countdown (workshop 09) ----
+    // Starts the first time the break slide opens and keeps running if you leave and come back.
+    const BREAK_MS = 10 * 60 * 1000;
+    let breakStart = null;
+    function breakText(elapsed){
+      const left = Math.max(0, BREAK_MS - elapsed);
+      if(left === 0) return 'Back to your seats';
+      const secs = Math.ceil(left / 1000);
+      return Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+    }
+    let breakClockEl = null;
+    function setBreakClock(elapsed){
+      if(!breakClockEl) breakClockEl = document.getElementById('break-clock');
+      const text = breakText(elapsed);
+      breakClockEl.textContent = text;
+      breakClockEl.classList.toggle('done', elapsed >= BREAK_MS);
+      return text;
+    }
+    function tickBreak(){ setBreakClock(Date.now() - breakStart) }
+    onEnter['s-break'] = () => {
+      if(breakStart === null){ breakStart = Date.now(); setInterval(tickBreak, 250) }
+      tickBreak();
+    };
+
+    // ---- Coin Clicker, embedded (workshop 09) ----
+    // Same rules as workshop_9/solutions/game.solution.js, but scoped to one root element,
+    // because the deck holds two games (break slide + high-score slide).
+    function makeClicker(root){
+      const $ = s => root.querySelector(s);
+      let score = 0, perClick = 1;
+      const upgrades = [
+        { name: 'Extra hands', bonus: 1, price: 20 },
+        { name: 'Coin press', bonus: 5, price: 100 },
+        { name: 'Gold mine', bonus: 20, price: 500 },
+      ];
+      function render(){
+        $('.c-score').textContent = score + ' 🪙';
+        $('.c-per').textContent = '+' + perClick + ' per click';
+        upgrades.forEach(u => { u.button.disabled = score < u.price });
+      }
+      const coin = $('.c-coin');
+      coin.addEventListener('click', () => { score += perClick; render(); coin.classList.add('pop') });
+      coin.addEventListener('animationend', () => coin.classList.remove('pop'));
+      upgrades.forEach(u => {
+        const button = document.createElement('button');
+        button.className = 'c-upgrade';
+        button.textContent = u.name + ' · +' + u.bonus + ' per click · ' + u.price + ' 🪙';
+        button.addEventListener('click', () => { if(score >= u.price){ score -= u.price; perClick += u.bonus; render() } });
+        $('.c-shop').append(button);
+        u.button = button;
+      });
+      const race = $('.c-race');
+      if(race) race.addEventListener('click', () => {
+        $('.c-result').textContent = 'Go! 10 seconds…';
+        race.disabled = true; score = 0; perClick = 1; render();
+        setTimeout(() => { race.disabled = false; $('.c-result').textContent = 'Time! You made ' + score + ' 🪙' }, 10000);
+      });
+      render();
+    }
+    document.querySelectorAll('.clicker').forEach(makeClicker);
+
+    // idempotent: everything derives from k
+    function applyStep(i, k){
+      meta[i].items.forEach(it => {
+        const el = it.el;
+        try{
+          if(it.vis){
+            let v = it.show === undefined ? true : k >= it.show;
+            if(it.hide !== undefined && k >= it.hide) v = false;
+            el.classList.toggle('st-vis', v);
+            el.classList.toggle('st-hid', !v);
+          }
+          if(it.on) el.classList.toggle('on', it.on.has(k));
+          if(it.cls) it.cls.forEach(c => el.classList.toggle(c.v, k >= c.n));
+          if(it.at){
+            let v = '';
+            it.at.forEach(a => { if(a.n <= k) v = a.v });
+            if(el.textContent !== v) el.textContent = v;
+          }
+        }catch(err){
+          // one broken element must never freeze navigation for the whole deck
+          console.error('steps: could not apply step ' + k + ' to', el, err);
+        }
+      });
+      const run = runners[slides[i].id];
+      if(run){
+        try{ run(slides[i], k) }catch(err){ console.error('mini: could not run step ' + k + ' on #' + slides[i].id, err) }
+      }
+    }
+
+    let idx = slides.findIndex(s => s.classList.contains('active'));
+    if(idx < 0) idx = 0;
+    let k = 0;
+    const prog = document.getElementById('prog');
+    const count = document.getElementById('count');
+    const hint = document.querySelector('.hint');
+
+    function hashFor(i, s){ return '#slide-' + (i + 1) + (s > 0 ? '/' + s : '') }
+
+    function go(i, s){
+      // a button inside a mini page or an embedded game keeps focus after the slide it's on
+      // is hidden; blur it now so the next Space/Enter reaches the deck, not that hidden button
+      const f = document.activeElement; if(f && f.closest && f.closest('.mini, .clicker')) f.blur();
+      i = Math.max(0, Math.min(i, slides.length - 1));
+      s = Math.max(0, Math.min(s | 0, meta[i].max));
+      slides.forEach((sl, j) => sl.classList.toggle('active', j === i));
+      applyStep(i, s);
+      idx = i; k = s;
+      if(onEnter[slides[i].id]) onEnter[slides[i].id]();
+      const max = meta[i].max;
+      prog.style.width = Math.round(((i + 1) / slides.length) * 100) + '%';
+      let dots = '';
+      for(let j = 1; j <= max; j++) dots += (j <= s ? '●' : '○');
+      count.textContent = (i + 1) + ' / ' + slides.length;
+      if(max > 0){
+        const sp = document.createElement('span');
+        sp.className = 'dots'; sp.textContent = dots;
+        count.appendChild(document.createTextNode(' ')); count.appendChild(sp);
+      }
+      if(hint) hint.textContent = max > 0 ? '→ next step · ← back' : 'Use ← → or Space';
+      if(location.hash !== hashFor(i, s)) history.replaceState(null, '', hashFor(i, s));
+    }
+    function next(){ if(k < meta[idx].max) go(idx, k + 1); else if(idx < slides.length - 1) go(idx + 1, 0) }
+    function prev(){ if(k > 0) go(idx, k - 1); else if(idx > 0) go(idx - 1, meta[idx - 1].max) }
+    function nextSlide(){ if(idx < slides.length - 1) go(idx + 1, 0) }   // skip the remaining steps
+    function prevSlide(){ if(idx > 0) go(idx - 1, 0) }                   // previous slide, unbuilt
+
+    document.getElementById('prev').addEventListener('click', prev);
+    document.getElementById('next').addEventListener('click', next);
+    // Presenter keys (clicker-friendly):
+    //   next step  : ArrowRight, Space, PageDown, Enter      prev step : ArrowLeft, PageUp, Backspace
+    //   next slide : ArrowDown, Shift+ArrowRight (k=0)       prev slide: ArrowUp, Shift+ArrowLeft (k=0)
+    //   End = this slide fully built (k=max)                 Home = this slide at k=0
+    // Ctrl/Alt/Meta combinations are left to the browser (e.g. Cmd+ArrowLeft = history back).
+    document.addEventListener('keydown', (e) => {
+      // Space/Enter on a focused button inside a mini page or an embedded game belong to that button
+      if((e.key === ' ' || e.key === 'Enter') && e.target.closest && e.target.closest('.mini, .clicker')) return;
+      if(e.ctrlKey || e.metaKey || e.altKey) return;
+      const key = e.key; let handled = true;
+      if(key === 'ArrowRight'){ if(e.shiftKey) nextSlide(); else next() }
+      else if(key === 'ArrowLeft'){ if(e.shiftKey) prevSlide(); else prev() }
+      else if(key === ' ' || key === 'PageDown' || key === 'Enter') next();
+      else if(key === 'PageUp' || key === 'Backspace') prev();
+      else if(key === 'ArrowDown') nextSlide();
+      else if(key === 'ArrowUp') prevSlide();
+      else if(key === 'End') go(idx, meta[idx].max);
+      else if(key === 'Home') go(idx, 0);
+      else handled = false;
+      if(handled) e.preventDefault();   // also stops Enter/Space from re-clicking a focused ◀/▶ button
+    });
+
+    // #slide-7 (k=0) and #slide-7/3 (k=3); k clamps to the slide's max
+    function fromHash(){
+      const m = location.hash.match(/slide-(\d+)(?:\/(\d+))?/);
+      if(!m) return false;
+      go(Number(m[1]) - 1, m[2] ? Number(m[2]) : 0);
+      return true;
+    }
+    const startHash = location.hash;
+    window.addEventListener('hashchange', fromHash);
+    meta.forEach((m, i) => applyStep(i, 0));
+    if(!fromHash()) go(idx, 0);
+
+    // fit the 1440x900 stage into the window (scale 1 at exactly 1440x900)
+    const stage = document.getElementById('stage');
+    function fit(){
+      const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
+      if(stage) stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit); fit();
+
+    // self-test: open the deck with a hash containing "selftest" (e.g. #selftest)
+    function selftest(){
+      const res = { max: meta.map(m => m.max), checks: [], ok: true };
+      const check = (name, cond) => { res.checks.push((cond ? 'PASS ' : 'FAIL ') + name); if(!cond) res.ok = false };
+      check('the break countdown does not start at page load', breakStart === null);
+      const sig = i => Array.from(slides[i].querySelectorAll(SEL)).map(e => e.className + '|' + e.textContent).join('\n');
+      const expect = []; meta.forEach((m, i) => { for(let s = 0; s <= m.max; s++) expect.push([i, s]) });
+      go(0, 0); const seq = [[0, 0]]; let guard = 0;
+      while(guard++ < 5000){ const b = idx + ':' + k; next(); if(idx + ':' + k === b) break; seq.push([idx, k]) }
+      check('forward walk visits every (slide,step) once, in order', JSON.stringify(seq) === JSON.stringify(expect));
+      check('forward walk stops on the last slide at its max', idx === slides.length - 1 && k === meta[idx].max);
+      const back = [[idx, k]]; guard = 0;
+      while(guard++ < 5000){ const b = idx + ':' + k; prev(); if(idx + ':' + k === b) break; back.push([idx, k]) }
+      check('backward walk is the exact reverse (previous slide lands on its max)', JSON.stringify(back) === JSON.stringify(expect.slice().reverse()));
+      check('backward walk stops at slide 1 step 0', idx === 0 && k === 0);
+      // attribute semantics, checked independently from the attribute strings for every slide and k
+      let semOK = true, semCount = 0;
+      const inSet = (str, kk) => str.split(',').some(p => { const m = p.replace(/\s+/g, '').match(/^(\d+)(?:-(\d*))?$/); if(!m) return false; const a = +m[1]; const b = m[2] === undefined ? a : (m[2] === '' ? Infinity : +m[2]); return kk >= a && kk <= b });
+      meta.forEach((m, i) => {
+        for(let s = 0; s <= m.max; s++){
+          go(i, s);
+          slides[i].querySelectorAll(SEL).forEach(el => {
+            const sh = el.getAttribute('data-show'), hi = el.getAttribute('data-hide'), on = el.getAttribute('data-on'), cls = el.getAttribute('data-cls'), at = el.getAttribute('data-at');
+            if(sh !== null || hi !== null){
+              let v = sh === null ? true : s >= +sh; if(hi !== null && s >= +hi) v = false;
+              semCount++; if(el.classList.contains('st-vis') !== v || el.classList.contains('st-hid') === v || el.classList.contains('r')) semOK = false;
+            }
+            if(on !== null){ semCount++; if(el.classList.contains('on') !== inSet(on, s)) semOK = false }
+            if(cls !== null){ cls.split(';').forEach(p => { const j = p.indexOf(':'); if(j < 0) return; const n = +p.slice(0, j), name = p.slice(j + 1).trim(); if(!/^\S+$/.test(name)) return; semCount++; if(el.classList.contains(name) !== (s >= n)) semOK = false }) }
+            if(at !== null){ let best = -1, val = ''; at.split(';').forEach(p => { const j = p.indexOf(':'); if(j < 0) return; const n = +p.slice(0, j); if(n <= s && n >= best){ best = n; val = p.slice(j + 1).trim() } }); semCount++; if(el.textContent !== val) semOK = false }
+          });
+        }
+      });
+      check('data-show/hide/on/cls/at semantics hold for every slide and every k (' + semCount + ' assertions)', semOK);
+      const r = slides.findIndex(s => s.id === 's-select');
+      if(r >= 0){
+        go(r, 2); const a = sig(r); go(r, 2); check('re-applying the same step is idempotent', sig(r) === a);
+        go(r, 0); go(r, 5); go(r, 2); check('state depends only on k (0→5→2 equals 2)', sig(r) === a);
+        go(r, 999); check('k > max clamps to max', k === meta[r].max);
+        check('hash is #slide-N/k for k>0', location.hash === '#slide-' + (r + 1) + '/' + meta[r].max);
+        go(r, 0); check('hash is #slide-N for k=0', location.hash === '#slide-' + (r + 1));
+        history.replaceState(null, '', '#slide-' + (r + 1) + '/1'); fromHash(); check('hash #slide-N/k is parsed (k=1)', idx === r && k === 1);
+        history.replaceState(null, '', '#slide-' + (r + 1) + '/99'); fromHash(); check('hash with k>max clamps', idx === r && k === meta[r].max);
+        go(r, 1);
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); check('ArrowRight = next step', idx === r && k === 2);
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' })); check('Space = next step', idx === r && k === 3);
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' })); check('ArrowLeft = previous step', idx === r && k === 2);
+        document.getElementById('next').click(); check('▶ button = next step', k === 3);
+        document.getElementById('prev').click(); check('◀ button = previous step', k === 2);
+        const press = (key, init) => document.dispatchEvent(new KeyboardEvent('keydown', Object.assign({ key }, init || {})));
+        press('PageDown'); check('PageDown = next step', idx === r && k === 3);
+        press('Enter'); check('Enter = next step', idx === r && k === 4);
+        press('PageUp'); check('PageUp = previous step', idx === r && k === 3);
+        press('Backspace'); check('Backspace = previous step', idx === r && k === 2);
+        press('End'); check('End = this slide at max', idx === r && k === meta[r].max);
+        press('Home'); check('Home = this slide at k=0', idx === r && k === 0);
+        go(r, 2); press('ArrowDown'); check('ArrowDown = next slide at k=0', idx === r + 1 && k === 0);
+        press('ArrowUp'); check('ArrowUp = previous slide at k=0', idx === r && k === 0);
+        go(r, 2); press('ArrowRight', { shiftKey: true }); check('Shift+ArrowRight = next slide at k=0', idx === r + 1 && k === 0);
+        press('ArrowLeft', { shiftKey: true }); check('Shift+ArrowLeft = previous slide at k=0', idx === r && k === 0);
+        go(r, 2); press('ArrowRight', { metaKey: true }); check('Meta+ArrowRight is left to the browser', idx === r && k === 2);
+        go(r, meta[r].max); next(); check('→ at max goes to the next slide at k=0', idx === r + 1 && k === 0);
+        prev(); check('← at k=0 goes to the previous slide at its max', idx === r && k === meta[r].max);
+        check('dots show done steps', count.querySelector('.dots') && count.querySelector('.dots').textContent === '●'.repeat(meta[r].max));
+        check('hint text on a stepped slide', hint.textContent === '→ next step · ← back');
+        go(0, 0); check('no dots / default hint on a slide without steps', !count.querySelector('.dots') && hint.textContent === 'Use ← → or Space' && count.textContent === '1 / ' + slides.length);
+      }
+      // ---- workshop 09 checks ----
+      const slideAt = id => slides.findIndex(s => s.id === id);
+      const ORDER = 's-title,s-overview,q-w1,s-hack,s-tree,s-select,q-head,s-text,q-text,s-listen,q-trap,s-create,q-list,s-tools,s-break,s-build,s-race,s-recap,s-hw,s-end';
+      check('slides are in the planned order', slides.map(s => s.id).join(',') === ORDER);
+      const ids = Array.from(document.querySelectorAll('[id]')).map(e => e.id);
+      check('every id in the deck is unique', new Set(ids).size === ids.length);
+      {
+        // nothing may run into the footer or past the right padding (needs a 1440x900 window)
+        const still = document.createElement('style');
+        still.textContent = '*{animation:none !important; transition:none !important}';
+        document.head.appendChild(still);
+        const scale = document.getElementById('stage').getBoundingClientRect().width / 1440;
+        const clash = new Set();
+        meta.forEach((m, i) => {
+          go(i, m.max);
+          const foot = slides[i].querySelector('.foot'), body = slides[i].querySelector('.body');
+          if(!foot || !body) return;
+          const bottom = foot.getBoundingClientRect().top + 1;
+          const right = slides[i].getBoundingClientRect().right - 100 * scale + 1;
+          body.querySelectorAll('*').forEach(el => {
+            const r = el.getBoundingClientRect();
+            if(r.height > 0 && (r.bottom > bottom || r.right > right)) clash.add(slides[i].id);
+          });
+        });
+        still.remove();
+        check('no slide runs into its footer or past the right edge' + (clash.size ? ': ' + Array.from(clash).join(', ') : ''), clash.size === 0);
+      }
+      // live mini pages: the page on the slide must match every step, whatever path led there
+      const leaves = i => Array.from(slides[i].querySelectorAll('.mini-body *')).filter(e => e.children.length === 0).map(e => e.textContent.trim()).join('|');
+      const LIVE = {
+        'q-text':   ['Menu|5 ₾|7 ₾', 'Menu|5 ₾|7 ₾', 'Khinkali|1 ₾|7 ₾'],
+        's-listen': ['0', '0', '0', '0', '0', '1', '2'],
+        'q-trap':   ['Clicked: 0', 'Clicked: 0', 'Clicked: 1', 'Clicked: 0'],
+        's-create': ['', '', '', '', '', 'Khinkali', 'Khinkali|Khachapuri', 'Khinkali|Khachapuri|Lobio'],
+        'q-list':   ['', '', 'Lobio'],
+      };
+      Object.keys(LIVE).forEach(id => {
+        const i = slideAt(id), want = LIVE[id];
+        check(id + ' exists with ' + (want.length - 1) + ' steps', i >= 0 && meta[i].max === want.length - 1);
+        if(i < 0) return;
+        let each = true, path = true;
+        want.forEach((w, s) => { go(i, s); if(leaves(i) !== w) each = false });
+        want.forEach((w, s) => { go(i, 0); go(i, meta[i].max); go(i, s); if(leaves(i) !== w) path = false });
+        check(id + ': the mini page is right at every step', each);
+        check(id + ': the mini page depends only on k', path);
+      });
+      const iListen = slideAt('s-listen'), iTrap = slideAt('q-trap'), iList = slideAt('q-list');
+      const miniEl = (i, sel) => slides[i].querySelector('.mini-body ' + sel);
+      if(iListen >= 0 && iTrap >= 0 && iList >= 0){
+        go(iListen, 2); miniEl(iListen, '#like').click();
+        check('s-listen k=2: clicking does nothing yet', leaves(iListen) === '0');
+        go(iListen, 3); miniEl(iListen, '#like').click();
+        check('s-listen k=3: a real click runs the stored function', leaves(iListen) === '1');
+        go(iTrap, 2); const trapCode2 = slides[iTrap].querySelector('.code [data-at]').textContent;
+        go(iTrap, 3); const trapCode3 = slides[iTrap].querySelector('.code [data-at]').textContent;
+        check('q-trap: the code shows addOne() until the fix, then addOne', trapCode2 === 'addOne()' && trapCode3 === 'addOne');
+        go(iTrap, 2); miniEl(iTrap, '#btn').click(); miniEl(iTrap, '#btn').click();
+        check('q-trap k=2: addOne() ran once, clicks do nothing', leaves(iTrap) === 'Clicked: 1');
+        go(iTrap, 3); miniEl(iTrap, '#btn').click(); miniEl(iTrap, '#btn').click();
+        check('q-trap k=3: with addOne (no parentheses) clicks count', leaves(iTrap) === 'Clicked: 2');
+        go(iList, 2);
+        check('q-list k=2: there is only one <li>', slides[iList].querySelectorAll('.mini-body li').length === 1);
+        go(iTrap, 3);
+        miniEl(iTrap, '#btn').dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+        check('Space on a button inside a mini page does not navigate', idx === iTrap && k === 3);
+        miniEl(iTrap, '#btn').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        check('ArrowRight from inside a mini page still navigates', idx === iTrap + 1 && k === 0);
+        // F1: a mini-page button that keeps focus across a navigation must not eat the next Space
+        go(iTrap, 3); miniEl(iTrap, '#btn').focus();
+        go(iTrap + 1, 0);
+        document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+        check('Space after go() navigates away from a focused mini-page button still advances the new slide', idx === iTrap + 1 && k === 1);
+      }
+      // break countdown, embedded games, hackers' round
+      check('breakText: 10:00 · 9:59 · 0:01 · Back to your seats', typeof breakText === 'function' &&
+        breakText(0) === '10:00' && breakText(1000) === '9:59' && breakText(599000) === '0:01' && breakText(600000) === 'Back to your seats');
+      const iBreak = slideAt('s-break'), iRace = slideAt('s-race');
+      check('break and high-score slides exist', iBreak >= 0 && iRace >= 0);
+      if(iBreak >= 0 && iRace >= 0){
+        go(iBreak, 0); const started = breakStart;
+        check('the countdown runs once the break slide opens', started !== null && /^(10:00|9:5\d)$/.test(document.getElementById('break-clock').textContent));
+        go(0, 0); go(iBreak, 0);
+        check('coming back to the break slide does not restart the countdown', breakStart === started);
+        const bg = s => slides[iBreak].querySelector('.clicker ' + s);
+        const ups = Array.from(slides[iBreak].querySelectorAll('.clicker .c-upgrade'));
+        check('break game: 0 🪙 · +1 per click · 3 upgrades, all off', bg('.c-score').textContent === '0 🪙' && bg('.c-per').textContent === '+1 per click' && ups.length === 3 && ups.every(b => b.disabled));
+        check('break game: upgrade texts', ups.map(b => b.textContent).join(' | ') === "Extra hands · +1 per click · 20 🪙 | Coin press · +5 per click · 100 🪙 | Gold mine · +20 per click · 500 🪙");
+        for(let n = 0; n < 20; n++) bg('.c-coin').click();
+        check('break game: 20 clicks → 20 🪙, Extra hands on, Coin press off', bg('.c-score').textContent === '20 🪙' && !ups[0].disabled && ups[1].disabled);
+        ups[0].click();
+        check('break game: buying Extra hands → 0 🪙 and +2 per click', bg('.c-score').textContent === '0 🪙' && bg('.c-per').textContent === '+2 per click');
+        // F1: the break game's coin keeping focus after leaving the slide must not eat the next Space
+        {
+          const scoreBefore = bg('.c-score').textContent;
+          bg('.c-coin').focus();
+          go(slideAt('s-build'), 0);
+          document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+          check('Space after leaving the break game with its coin focused advances the new slide', idx === slideAt('s-build') && k === 1);
+          check('Space after leaving the break game does not also click its coin', bg('.c-score').textContent === scoreBefore);
+        }
+        go(iBreak, 0);
+        {
+          const beforeIdx = idx, beforeK = k;
+          bg('.c-coin').dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+          check('Space dispatched on the break coin, on its own slide, still does not navigate', idx === beforeIdx && k === beforeK);
+        }
+        // F2: the finished state ("Back to your seats") must not overflow the footer or the kicker
+        {
+          const clockEl = document.getElementById('break-clock');
+          const prevText = clockEl.textContent, prevDone = clockEl.classList.contains('done');
+          const still = document.createElement('style');
+          still.textContent = '*{animation:none !important; transition:none !important}';
+          document.head.appendChild(still);
+          setBreakClock(BREAK_MS);
+          const foot = slides[iBreak].querySelector('.foot'), body = slides[iBreak].querySelector('.body');
+          const bottom = foot.getBoundingClientRect().top + 1;
+          let clash = false;
+          body.querySelectorAll('*').forEach(el => { const r = el.getBoundingClientRect(); if(r.height > 0 && r.bottom > bottom) clash = true });
+          still.remove();
+          clockEl.textContent = prevText; clockEl.classList.toggle('done', prevDone);
+          check('break slide at 0:00 ("Back to your seats") does not overflow the footer', !clash);
+        }
+        check('break game has no race button', !slides[iBreak].querySelector('.c-race'));
+        const hk = document.getElementById('coin');
+        check('the deck has one #coin, on the high-score slide', document.querySelectorAll('#coin').length === 1 && slides[iRace].contains(hk));
+        const rg = s => slides[iRace].querySelector('.clicker ' + s);
+        rg('.c-race').click();
+        check('race: Go! 10 seconds…, race button off, score reset', rg('.c-result').textContent === 'Go! 10 seconds…' && rg('.c-race').disabled && rg('.c-score').textContent === '0 🪙');
+        for(let n = 0; n < 1000; n++) hk.click();
+        res.after = { ms: 10500, run: () => {
+          check('race: after 10 s → Time! You made 1000 🪙', rg('.c-result').textContent === 'Time! You made 1000 🪙');
+          check('race: the race button is on again', !rg('.c-race').disabled);
+        } };
+      }
+      // ---- /workshop 09 checks ----
+      go(0, 0);
+      return res;
+    }
+    function runSelftest(){
+      let res;
+      try{ res = selftest() }catch(err){ res = { ok:false, error: String(err && err.stack || err) } }
+      const report = () => {
+        const txt = 'SELFTEST ' + JSON.stringify(res);
+        console.log(txt);
+        const pre = document.createElement('pre'); pre.id = 'selftest-out'; pre.hidden = true; pre.textContent = txt;
+        document.body.appendChild(pre);
+      };
+      // checks that need real time (the 10-second race) come back as res.after = { ms, run }
+      const after = res.after; delete res.after;
+      if(after) setTimeout(() => { try{ after.run() }catch(err){ res.ok = false; res.error = String(err && err.stack || err) } report() }, after.ms);
+      else report();
+      return res;
+    }
+    if(/selftest/.test(startHash)) runSelftest();
+  })();
+</script>
