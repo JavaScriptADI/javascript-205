@@ -131,7 +131,7 @@ The fixed file is `workshop_10/solutions/supra/app.solution.js`, and `workshop_1
 
 ## If there's no internet (or no credits)
 
-Skip steps 1–8. Go through slide 11 and make the five fixes by hand in `supra-live/app.js`, refreshing the page after each one. The deck's embedded pages (slides 6 and 21) work offline.
+Skip steps 1–8. Go through slide 11 and make the five fixes by hand in `supra-live/app.js`, refreshing the page after each one. The deck's embedded pages (slides 6 and 14) work offline.
 
 ## Reset (for the next group)
 

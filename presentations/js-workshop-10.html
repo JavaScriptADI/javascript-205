@@ -1,4 +1,4 @@
-<!-- JavaScript Workshop 10 — Coding with AI (Command Code live on a buggy Supra order page) + classes. Self-contained. Use ← → / Space to navigate. Selftest: open with #selftest in a 1440x900 window. -->
+<!-- JavaScript Workshop 10 — Coding with AI (Command Code live on a buggy Supra order page). Self-contained. Use ← → / Space to navigate. Selftest: open with #selftest in a 1440x900 window. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JavaScript · Workshop 10</title>
@@ -297,7 +297,7 @@
         <div class="kick r" style="--d:0s">[ JAVASCRIPT <span class="b">·</span> WORKSHOP 10 ]</div>
         <div class="big r" style="--d:.08s">CODE WITH AI</div>
         <div class="rule r" style="--d:.16s"></div>
-        <div class="subline r" style="--d:.22s">Command Code fixes a broken page — then we learn classes</div>
+        <div class="subline r" style="--d:.22s">Command Code fixes a broken page — and you check its work</div>
       </div>
       <div class="foot">
         <span class="motif">&gt; cmdc</span>
@@ -316,11 +316,11 @@
       <div class="head"><div class="kick">[ TODAY ]</div><div class="num">02</div></div>
       <div class="body">
         <h1 class="h-lg r" style="--d:0s">Workshop 10</h1>
-        <p class="lead r" style="--d:.12s; margin-top:20px">Today you meet a <span class="hl">coding agent</span>: an AI that reads your project, runs commands and edits your code, while you watch and judge. Then the next big idea in JavaScript: <span class="hl">classes</span>.</p>
+        <p class="lead r" style="--d:.12s; margin-top:20px">Today you meet a <span class="hl">coding agent</span>: an AI that reads your project, runs commands and edits your code, while you watch and judge. Five bugs, one AI, and <span class="hl">you</span> as the reviewer.</p>
         <div class="grid c3">
-          <div class="cell r" style="--d:.20s"><div class="ct">Coding with AI</div><div class="cd">Command Code against a broken page, live. Humans vs AI: who finds more bugs?</div></div>
-          <div class="cell" data-show="1"><div class="ct">Classes</div><div class="cd">class · constructor · new · this, with a vote after each idea.</div></div>
-          <div class="cell" data-show="2"><div class="ct">Build + homework</div><div class="cd">class Order in the class work. At home: set up Command Code.</div></div>
+          <div class="cell r" style="--d:.20s"><div class="ct">Meet the agent</div><div class="cd">What a coding agent is, and the Command Code keys you'll see today.</div></div>
+          <div class="cell" data-show="1"><div class="ct">Humans vs AI</div><div class="cd">Two votes on a broken page, then you race the AI to find its bugs.</div></div>
+          <div class="cell" data-show="2"><div class="ct">Live + homework</div><div class="cd">Command Code fixes the page while you review every diff. At home: set it up yourself.</div></div>
         </div>
         <p class="note" data-show="3"><span class="hl">How the votes work:</span> when the timer bar appears, everyone holds up 1, 2, 3 or 4 fingers at the same time. Today some votes are about the AI's work: <span class="hl">would you accept it?</span></p>
       </div>
@@ -481,7 +481,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
         #q-bug1 .opt .L{width:40px; height:40px; font-size:24px}
         #q-bug1 .stack .note{margin-top:0}
       </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 1 OF 6 ]</div><div class="num">07</div></div>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 1 OF 3 ]</div><div class="num">07</div></div>
       <div class="body">
         <h1 class="h-md r" style="--d:0s">Only the first Add works. Why?</h1>
         <div class="quiz r" style="--d:.12s">
@@ -533,7 +533,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
         #q-bug2 .notes{display:grid; margin-top:16px}
         #q-bug2 .notes > *{grid-area:1/1; margin-top:0}
       </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 2 OF 6 ]</div><div class="num">08</div></div>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 2 OF 3 ]</div><div class="num">08</div></div>
       <div class="body">
         <h1 class="h-md r" style="--d:0s">Khachapuri, then Lobio. The total?</h1>
         <div class="codes r" style="--d:.12s">
@@ -684,7 +684,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
         #q-review .notes{display:grid; margin-top:14px}
         #q-review .notes > *{grid-area:1/1; margin-top:0}
       </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 3 OF 6 ]</div><div class="num">12</div></div>
+      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 3 OF 3 ]</div><div class="num">12</div></div>
       <div class="body">
         <h1 class="h-md r" style="--d:0s">It says "fixed". Do you accept?</h1>
         <div class="diffs r" style="--d:.12s">
@@ -735,295 +735,6 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
       <div class="foot"><span>JavaScript · Workshop 10</span><span>Coding with AI</span></div>
     </section>
 
-    <!-- WHY CLASSES -->
-    <section class="slide" id="s-why">
-      <style>
-        #s-why .split{grid-template-columns:1fr 1fr; align-items:start; gap:50px; margin-top:30px}
-        #s-why .code{font-size:21px; padding:22px 30px}
-        #s-why .split .note{margin-top:20px}
-        #s-why .bp{display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:24px}
-        #s-why .bp .cls{border:2px dashed var(--ink); padding:14px 30px; font-family:var(--mono); font-size:24px; font-weight:600; text-align:center}
-        #s-why .bp .cls .sm{display:block; font-family:var(--body); font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); margin-top:6px}
-        #s-why .bp .ar2{font-family:var(--mono); font-size:16px; color:var(--mute)}
-        #s-why .bp .objs{display:flex; gap:16px}
-        #s-why .bp .obj{border:1.5px solid var(--ink); padding:12px 18px; font-family:var(--mono); font-size:17px; line-height:1.6}
-        #s-why .bp .obj b{display:block; font-family:var(--body); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mute); font-weight:600; margin-bottom:4px}
-      </style>
-      <div class="head"><div class="kick">[ PART 2 <span class="b">·</span> CLASSES ]</div><div class="num">14</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">Why classes?</h1>
-        <div class="split">
-          <div class="r" style="--d:.12s">
-            <div class="plab">app.js · one table</div>
-            <div class="code"><span class="ln" data-on="1"><span class="kw">let</span> order = []
-</span><span class="ln">
-</span><span class="ln" data-on="1"><span class="kw">function</span> renderOrder() { … }
-</span><span class="ln" data-on="1"><span class="kw">function</span> removeDish(index) { … }
-</span><span class="ln" data-on="1"><span class="kw">function</span> clearOrder() { … }
-</span></div>
-            <p class="note" data-show="1"><span class="hl">Table 7 sits down.</span> Copy everything? <span class="pq">order7</span>, <span class="pq">renderOrder7</span>, <span class="pq">removeDish7</span>… and again for twenty tables?</p>
-          </div>
-          <div class="bp" data-show="2">
-            <div class="cls">class Order<span class="sm">the blueprint · written once</span></div>
-            <div class="ar2">↓ new Order(5) &nbsp;&nbsp;&nbsp; ↓ new Order(7)</div>
-            <div class="objs">
-              <div class="obj"><b>t5</b>table: 5<br>items: [Lobio]<br>add() · total()</div>
-              <div class="obj"><b>t7</b>table: 7<br>items: [Pkhali]<br>add() · total()</div>
-            </div>
-          </div>
-        </div>
-        <p class="note" data-show="3"><span class="hl">A class is a blueprint for objects.</span> <span class="pq">new</span> builds one object from it, as many as you need, and every object carries its own data <span class="hl">and</span> its own functions.</p>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Classes</span></div>
-    </section>
-
-    <!-- CLASS · CONSTRUCTOR · NEW · THIS -->
-    <section class="slide" id="s-class">
-      <style>
-        #s-class .trace{grid-template-columns:1.1fr .9fr}
-        #s-class .trace .code{font-size:20px}
-        #s-class .vars{flex-direction:column; align-items:stretch; gap:8px}
-        #s-class .var{padding:8px 14px}
-        #s-class .var .v{font-size:18px}
-      </style>
-      <div class="head"><div class="kick">[ CLASSES ]</div><div class="num">15</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">class · constructor · new · this</h1>
-        <div class="trace r" style="--d:.12s">
-          <div class="code"><span class="ln" data-on="1"><span class="kw">class</span> Dish {
-</span><span class="ln" data-on="1">  constructor(name, price) {
-</span><span class="ln" data-on="1,3,6">    <span class="kw">this</span>.name = name
-</span><span class="ln" data-on="1,4,6">    <span class="kw">this</span>.price = price
-</span><span class="ln" data-on="1">  }
-</span><span class="ln" data-on="1">}
-</span><span class="ln">
-</span><span class="ln" data-on="2,5"><span class="kw">const</span> lobio = <span class="kw">new</span> Dish(<span class="str">"Lobio"</span>, 8)
-</span><span class="ln" data-on="6"><span class="kw">const</span> mtsvadi = <span class="kw">new</span> Dish(<span class="str">"Mtsvadi"</span>, 15)
-</span><span class="ln" data-on="7">console.log(lobio.price, mtsvadi.name)
-</span></div>
-          <div class="panel">
-            <div class="stepnote" data-at="0:A blueprint for dishes, and two dishes made from it. Watch WHEN the code inside the class runs.;1:The class is only a blueprint. Reading it runs nothing, and no dish exists yet.;2:new Dish(…) makes a brand new, empty object, then runs constructor with name = Lobio and price = 8.;3:Inside constructor, this IS that new object. this.name = name puts Lobio on it.;4:this.price = price puts 8 on it.;5:constructor is done, and new hands the finished object back. Now it has a name: lobio.;6:A second new makes a second, separate object. The constructor runs again, with Mtsvadi and 15.;7:Two objects from one blueprint, each with its own values."></div>
-            <div>
-              <div class="plab">objects</div>
-              <div class="vars">
-                <div class="var" data-on="2-4"><div class="k">this</div><div class="v" data-at="0:—;2:{ };3:{ name: 'Lobio' };4:{ name: 'Lobio', price: 8 };5:—"></div></div>
-                <div class="var" data-on="5"><div class="k">lobio</div><div class="v" data-at="0:—;5:Dish { name: 'Lobio', price: 8 }"></div></div>
-                <div class="var" data-on="6"><div class="k">mtsvadi</div><div class="v" data-at="0:—;6:Dish { name: 'Mtsvadi', price: 15 }"></div></div>
-              </div>
-            </div>
-            <div><div class="plab">console</div><div class="outp"><div class="ol" data-show="7">8 Mtsvadi</div></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Classes</span></div>
-    </section>
-
-    <!-- METHODS + THIS -->
-    <section class="slide" id="s-methods">
-      <style>
-        #s-methods .trace{grid-template-columns:1.2fr .8fr}
-        #s-methods .trace .code{font-size:19px; line-height:1.6; padding:20px 32px}
-        #s-methods .var{min-width:0}
-        #s-methods .var .v{font-size:18px}
-      </style>
-      <div class="head"><div class="kick">[ CLASSES ]</div><div class="num">16</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">Methods — and this</h1>
-        <div class="trace r" style="--d:.12s">
-          <div class="code"><span class="ln"><span class="kw">class</span> Order {
-</span><span class="ln" data-on="2">  constructor(table) {
-</span><span class="ln" data-on="2">    <span class="kw">this</span>.table = table
-</span><span class="ln" data-on="2">    <span class="kw">this</span>.items = []
-</span><span class="ln" data-on="2">  }
-</span><span class="ln" data-on="1">  add(dish) {
-</span><span class="ln" data-on="1,3,4">    <span class="kw">this</span>.items.push(dish)
-</span><span class="ln" data-on="1">  }
-</span><span class="ln" data-on="1">  total() {
-</span><span class="ln" data-on="1,5">    <span class="kw">return</span> <span class="kw">this</span>.items.reduce((s, d) =&gt; s + d.price, 0)
-</span><span class="ln" data-on="1">  }
-</span><span class="ln">}
-</span><span class="ln" data-on="2"><span class="kw">const</span> t5 = <span class="kw">new</span> Order(5)
-</span><span class="ln" data-on="3">t5.add(lobio)
-</span><span class="ln" data-on="4">t5.add(mtsvadi)
-</span><span class="ln" data-on="5-6">console.log(t5.total())
-</span></div>
-          <div class="panel">
-            <div class="stepnote" data-at="0:The Order blueprint: a constructor and two methods. lobio and mtsvadi are the dishes from the last slide.;1:add and total are methods: functions written inside the class, with no function keyword. Every Order object gets them.;2:new Order(5) runs constructor: table 5, and items = [], a new empty array just for this order.;3:t5.add(lobio) runs add with this = t5, the object before the dot. Lobio goes into t5.items.;4:Again this is t5, and its items grow.;5:t5.total() runs reduce over t5.items: 0 + 8 + 15.;6:It prints 23. this is always the object before the dot: in t5.total(), this is t5."></div>
-            <div>
-              <div class="plab">inside the method</div>
-              <div class="vars"><div class="var" data-on="3-5"><div class="k">this</div><div class="v" data-at="0:—;3:t5;6:—"></div></div></div>
-            </div>
-            <div>
-              <div class="plab">the object t5</div>
-              <div class="vars">
-                <div class="var" data-on="2"><div class="k">table</div><div class="v" data-at="0:—;2:5"></div></div>
-                <div class="var" data-on="2-4"><div class="k">items</div><div class="v" data-at="0:—;2:[ ];3:[ Lobio ];4:[ Lobio, Mtsvadi ]"></div></div>
-              </div>
-            </div>
-            <div><div class="plab">console</div><div class="outp"><div class="ol" data-show="6">23</div></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Classes</span></div>
-    </section>
-
-    <!-- VOTE · TWO COUNTERS -->
-    <section class="slide" id="q-c1">
-      <style>
-        #q-c1 .quiz .code{font-size:21px; line-height:1.65}
-        #q-c1 .stack .note{margin-top:0}
-      </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 4 OF 6 ]</div><div class="num">17</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">What does it print?</h1>
-        <div class="quiz r" style="--d:.12s">
-          <div>
-            <div class="code"><span class="ln"><span class="kw">class</span> Counter {
-</span><span class="ln">  constructor() { <span class="kw">this</span>.count = 0 }
-</span><span class="ln">  add() { <span class="kw">this</span>.count++ }
-</span><span class="ln">}
-</span><span class="ln">
-</span><span class="ln" data-on="2"><span class="kw">const</span> a = <span class="kw">new</span> Counter()
-</span><span class="ln" data-on="2"><span class="kw">const</span> b = <span class="kw">new</span> Counter()
-</span><span class="ln" data-on="2">a.add()
-</span><span class="ln" data-on="2">a.add()
-</span><span class="ln" data-on="2">b.add()
-</span><span class="ln" data-on="2">console.log(a.count, b.count)
-</span></div>
-            <div class="stack">
-              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it</div><div class="tbar"><div class="tfill"></div></div></div>
-              <div data-show="2"><div class="plab">console</div><div class="outp"><div class="ol">2 1</div></div></div>
-            </div>
-          </div>
-          <div>
-            <div class="opts">
-              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>3 3</span></div>
-              <div class="opt" data-cls="2:right"><span class="L">2</span><span>2 1</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">3</span><span>1 1</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>2 undefined</span></div>
-            </div>
-            <p class="note" data-show="2"><span class="hl">Each new builds its own object</span> with its own count. <span class="pq">a.add()</span> only changes a, because this is the object before the dot.</p>
-          </div>
-        </div>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Your turn</span></div>
-    </section>
-
-    <!-- VOTE · FORGOT NEW -->
-    <section class="slide" id="q-c2">
-      <style>
-        #q-c2 .quiz .code{font-size:22px}
-        #q-c2 .quiz .outp .ol{font-size:18px}
-        #q-c2 .stack .note{margin-top:0}
-      </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 5 OF 6 ]</div><div class="num">18</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">What does it print?</h1>
-        <div class="quiz r" style="--d:.12s">
-          <div>
-            <div class="code"><span class="ln"><span class="kw">class</span> Order {
-</span><span class="ln">  constructor(table) {
-</span><span class="ln">    <span class="kw">this</span>.table = table
-</span><span class="ln">    <span class="kw">this</span>.items = []
-</span><span class="ln">  }
-</span><span class="ln">}
-</span><span class="ln">
-</span><span class="ln" data-on="2-3"><span class="kw">const</span> t7 = <span data-at="0:Order(7);3:new Order(7)"></span>
-</span><span class="ln">console.log(t7.table)
-</span></div>
-            <div class="stack">
-              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it</div><div class="tbar"><div class="tfill"></div></div></div>
-              <div data-show="2"><div class="plab">console</div><div class="outp"><div class="ol err" data-at="2:TypeError: Class constructor Order cannot be invoked without 'new';3:7"></div></div></div>
-            </div>
-          </div>
-          <div>
-            <div class="opts">
-              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>7</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">2</span><span>undefined</span></div>
-              <div class="opt" data-cls="2:right"><span class="L">3</span><span>TypeError</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>Order { table: 7, items: [] }</span></div>
-            </div>
-            <div class="notes" style="display:grid; margin-top:22px">
-              <p class="note" data-show="2" data-hide="3" style="grid-area:1/1; margin-top:0"><span class="hl">A class is not a function you call.</span> new is what builds the object. Read the error: it says exactly that.</p>
-              <p class="note" data-show="3" style="grid-area:1/1; margin-top:0"><span class="hl">Fix:</span> <span class="pq">new Order(7)</span>. Now it prints 7.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Your turn</span></div>
-    </section>
-
-    <!-- VOTE · FORGOT THIS -->
-    <section class="slide" id="q-c3">
-      <style>
-        #q-c3 .quiz .code{font-size:20px; line-height:1.6; padding:22px 32px}
-        #q-c3 .stack .note{margin-top:0}
-      </style>
-      <div class="head"><div class="kick">[ YOUR TURN <span class="b">·</span> 6 OF 6 ]</div><div class="num">19</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">What does it print?</h1>
-        <div class="quiz r" style="--d:.12s">
-          <div>
-            <div class="code"><span class="ln"><span class="kw">class</span> Order {
-</span><span class="ln">  constructor(table) {
-</span><span class="ln">    <span class="kw">this</span>.table = table
-</span><span class="ln">    <span class="kw">this</span>.items = []
-</span><span class="ln">  }
-</span><span class="ln">  count() {
-</span><span class="ln" data-on="2-3">    <span class="kw">return</span> <span data-at="0:items;3:this.items"></span>.length
-</span><span class="ln">  }
-</span><span class="ln">}
-</span><span class="ln">
-</span><span class="ln"><span class="kw">const</span> t5 = <span class="kw">new</span> Order(5)
-</span><span class="ln">console.log(t5.count())
-</span></div>
-            <div class="stack">
-              <div class="vote" data-show="1" data-hide="2">Vote: hold up 1, 2, 3 or 4 fingers<div class="vs">20 seconds, then we run it</div><div class="tbar"><div class="tfill"></div></div></div>
-              <div data-show="2"><div class="plab">console</div><div class="outp"><div class="ol err" data-at="2:ReferenceError: items is not defined;3:0"></div></div></div>
-            </div>
-          </div>
-          <div>
-            <div class="opts">
-              <div class="opt" data-cls="2:wrong"><span class="L">1</span><span>0</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">2</span><span>undefined</span></div>
-              <div class="opt" data-cls="2:right"><span class="L">3</span><span>ReferenceError</span></div>
-              <div class="opt" data-cls="2:wrong"><span class="L">4</span><span>5</span></div>
-            </div>
-            <div class="notes" style="display:grid; margin-top:22px">
-              <p class="note" data-show="2" data-hide="3" style="grid-area:1/1; margin-top:0"><span class="hl">items lives on the object, not in a variable.</span> Inside a method, the object's own things are always <span class="pq">this.something</span>.</p>
-              <p class="note" data-show="3" style="grid-area:1/1; margin-top:0"><span class="hl">Fix:</span> <span class="pq">this.items.length</span>. The order is still empty, so it prints 0.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Your turn</span></div>
-    </section>
-
-    <!-- CLASSES CHEAT SHEET -->
-    <section class="slide" id="s-cheat">
-      <style>
-        #s-cheat .mtab{border:0; margin-top:30px}
-        #s-cheat .mrow{grid-template-columns:1fr 56px 1.25fr; border-left:1.5px solid var(--ink); border-right:1.5px solid var(--ink); padding:15px 34px; font-size:23px}
-        #s-cheat .mrow:first-child{border-top:1.5px solid var(--ink)}
-        #s-cheat .mrow:last-child{border-bottom:1.5px solid var(--ink)}
-        #s-cheat .mrow .ex{font-family:var(--body); font-weight:500}
-      </style>
-      <div class="head"><div class="kick">[ CLASSES ]</div><div class="num">20</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">Which part do I need?</h1>
-        <div class="mtab">
-          <div class="mrow r" style="--d:.10s"><span class="ex">a blueprint for objects</span><span class="ar">→</span><span class="re"><span>class Order { }</span><span class="rc">written once</span></span></div>
-          <div class="mrow r" style="--d:.14s"><span class="ex">set up every new object</span><span class="ar">→</span><span class="re"><span>constructor(table) { }</span><span class="rc">runs once per new</span></span></div>
-          <div class="mrow r" style="--d:.18s"><span class="ex">build one object</span><span class="ar">→</span><span class="re"><span>new Order(5)</span><span class="rc">no new → TypeError</span></span></div>
-          <div class="mrow r" style="--d:.22s"><span class="ex">the object, inside the class</span><span class="ar">→</span><span class="re"><span>this</span><span class="rc">this.items, not items</span></span></div>
-          <div class="mrow r" style="--d:.26s"><span class="ex">something it can do</span><span class="ar">→</span><span class="re"><span>total() { }</span><span class="rc">no function keyword</span></span></div>
-          <div class="mrow r" style="--d:.30s"><span class="ex">use it</span><span class="ar">→</span><span class="re"><span>t5.total()</span><span class="rc">this = t5</span></span></div>
-        </div>
-        <p class="note r" style="--d:.36s">After the break you write class Order yourself: the Supra order, as a class.</p>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Classes</span></div>
-    </section>
-
     <!-- BREAK -->
     <section class="slide" id="s-break">
       <style>
@@ -1031,7 +742,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
         #s-break .clock{font-family:var(--display); font-size:200px; line-height:.9; letter-spacing:.01em; margin-top:10px}
         #s-break .clock.done{font-size:64px; letter-spacing:.02em}
       </style>
-      <div class="head"><div class="kick">[ BREAK ]</div><div class="num">21</div></div>
+      <div class="head"><div class="kick">[ BREAK ]</div><div class="num">14</div></div>
       <div class="body">
         <div class="split">
           <div>
@@ -1050,61 +761,17 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
       <div class="foot"><span>JavaScript · Workshop 10</span><span>Break</span></div>
     </section>
 
-    <!-- BUILD -->
-    <section class="slide" id="s-build">
-      <style>
-        #s-build .steps{margin-top:30px}
-        #s-build .step{min-height:130px; padding:20px}
-        #s-build .cols2{margin-top:30px}
-        #s-build .cols2 li{font-size:19px; line-height:1.6}
-        #s-build .cols2 .pq{font-size:18px}
-      </style>
-      <div class="head"><div class="kick">[ CLASS WORK ]</div><div class="num">22</div></div>
-      <div class="body">
-        <h1 class="h-md r" style="--d:0s">Build: class Order</h1>
-        <div class="steps">
-          <div class="step r" style="--d:.12s"><div class="n">01</div><div class="t">OPEN</div><div class="d">workshop_10/classWork.js in your editor.</div></div>
-          <div class="arrow r" style="--d:.16s">→</div>
-          <div class="step r" style="--d:.20s"><div class="n">02</div><div class="t">WRITE</div><div class="d">The task's code, inside its class.</div></div>
-          <div class="arrow r" style="--d:.24s">→</div>
-          <div class="step r" style="--d:.28s"><div class="n">03</div><div class="t">UNCOMMENT</div><div class="d">That task's lines under CHECKS.</div></div>
-          <div class="arrow r" style="--d:.32s">→</div>
-          <div class="step r" style="--d:.36s"><div class="n">04</div><div class="t">RUN</div><div class="d">node classWork.js, then compare with Expected.</div></div>
-        </div>
-        <div class="cols2" data-show="1">
-          <div class="c"><div class="lbl">tasks 1–4 · Dish and Order</div>
-            <ul>
-              <li>1 · class Dish: <span class="pq">constructor</span> + <span class="pq">this</span></li>
-              <li>2 · <span class="pq">label()</span> → "Lobio · 8 ₾"</li>
-              <li>3 · class Order: a table and an empty <span class="pq">items</span></li>
-              <li>4 · <span class="pq">add(dish)</span></li>
-            </ul>
-          </div>
-          <div class="c"><div class="lbl">tasks 5–8 · the bill</div>
-            <ul>
-              <li>5 · <span class="pq">total()</span>, the Supra reduce</li>
-              <li>6 · <span class="pq">remove(name)</span>, filter done right</li>
-              <li>7 · <span class="pq">receipt()</span>, one string, many lines</li>
-              <li>8 · a second table <span class="mut">· ★ vegNames() · ★★ split(people)</span></li>
-            </ul>
-          </div>
-        </div>
-        <p class="note" data-show="2">Work in pairs: one types, one reads the task out loud, swap after every task. The solution is in <span class="pq">workshop_10/solutions/</span>, but try first.</p>
-      </div>
-      <div class="foot"><span>JavaScript · Workshop 10</span><span>Class work</span></div>
-    </section>
-
     <!-- RECAP -->
     <section class="slide" id="s-recap">
-      <div class="head"><div class="kick">[ RECAP ]</div><div class="num">23</div></div>
+      <div class="head"><div class="kick">[ RECAP ]</div><div class="num">15</div></div>
       <div class="body">
         <h1 class="h-md r" style="--d:0s">Today in five lines</h1>
         <ul class="recap r" style="--d:.12s">
           <li><span class="rn">01</span>A coding agent reads, plans, edits and runs commands, but only with your permission.</li>
-          <li data-show="1"><span class="rn">02</span>You're the reviewer: plan first, read every diff, run it, explain it.</li>
-          <li data-show="2"><span class="rn">03</span><span class="pq">class</span> is a blueprint, and <span class="pq">new</span> builds one object from it.</li>
-          <li data-show="3"><span class="rn">04</span><span class="pq">constructor</span> sets up each new object: <span class="pq">this.name = name</span>.</li>
-          <li data-show="4"><span class="rn">05</span>Methods are functions inside the class, and <span class="pq">this</span> is the object before the dot.</li>
+          <li data-show="1"><span class="rn">02</span>Plan mode first: it reads and thinks, and changes nothing.</li>
+          <li data-show="2"><span class="rn">03</span>One change at a time, and read every diff before you accept it.</li>
+          <li data-show="3"><span class="rn">04</span>"Fixed" is a claim, so run it yourself. A fix can hide the symptom and leave the cause.</li>
+          <li data-show="4"><span class="rn">05</span>Every bug today was something you already know. That's what lets you check the AI.</li>
         </ul>
       </div>
       <div class="foot"><span>JavaScript · Workshop 10</span><span>Recap</span></div>
@@ -1112,7 +779,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
 
     <!-- HOMEWORK -->
     <section class="slide" id="s-hw">
-      <div class="head"><div class="kick">[ HOMEWORK ]</div><div class="num">24</div></div>
+      <div class="head"><div class="kick">[ HOMEWORK ]</div><div class="num">16</div></div>
       <div class="body">
         <h1 class="h-md r" style="--d:0s">Homework 9: set up Command Code</h1>
         <p class="lead r" style="--d:.12s; margin-top:22px"><span class="hl">github.com/JavaScriptADI/javascript-205-homework-9</span>: install the tool you watched today, give it your rules, and hunt three bugs with it. You stay the reviewer.</p>
@@ -1142,7 +809,7 @@ cmdc          <span class="c">← on Windows · on macOS and Linux it's cmd</spa
 
   <div class="ui">
     <div class="prog-track"><div class="prog" id="prog"></div></div>
-    <div class="count" id="count">1 / 25</div>
+    <div class="count" id="count">1 / 17</div>
     <div class="btns">
       <button id="prev">◀</button>
       <button id="next">▶</button>
@@ -1612,7 +1279,7 @@ clearButton.addEventListener("click", clearOrder);
         }
       });
       check('data-show/hide/on/cls/at semantics hold for every slide and every k (' + semCount + ' assertions)', semOK);
-      const r = slides.findIndex(s => s.id === 's-class');
+      const r = slides.findIndex(s => s.id === 's-live');
       if(r >= 0){
         go(r, 2); const a = sig(r); go(r, 2); check('re-applying the same step is idempotent', sig(r) === a);
         go(r, 0); go(r, 5); go(r, 2); check('state depends only on k (0→5→2 equals 2)', sig(r) === a);
@@ -1647,11 +1314,13 @@ clearButton.addEventListener("click", clearOrder);
       }
       // ---- workshop 10 checks ----
       const slideAt = id => slides.findIndex(s => s.id === id);
-      const ORDER = 's-title,s-overview,s-agent,s-meet,s-keys,s-supra,q-bug1,q-bug2,s-hunt,s-live,s-bugs,q-review,s-rules,s-why,s-class,s-methods,q-c1,q-c2,q-c3,s-cheat,s-break,s-build,s-recap,s-hw,s-end';
+      const ORDER = 's-title,s-overview,s-agent,s-meet,s-keys,s-supra,q-bug1,q-bug2,s-hunt,s-live,s-bugs,q-review,s-rules,s-break,s-recap,s-hw,s-end';
       check('slides are in the planned order', slides.map(s => s.id).join(',') === ORDER);
       const nums = slides.map(s => s.querySelector('.head .num')).filter(Boolean).map(n => n.textContent);
-      check('slide numbers run 02…24 in order', nums.join(',') === Array.from({ length: 23 }, (_, i) => String(i + 2).padStart(2, '0')).join(','));
-      check('the counter starts at 1 / 25', slides.length === 25);
+      check('slide numbers run 02…16 in order', nums.join(',') === Array.from({ length: 15 }, (_, i) => String(i + 2).padStart(2, '0')).join(','));
+      check('17 slides', slides.length === 17);
+      check('no JavaScript classes anywhere in the deck (not covered yet)', !/\bclass\s+[A-Z]\w*\s*\{|\bconstructor\s*\(|\bnew\s+[A-Z]\w*\(/.test(slides.map(s => s.textContent).join('\n')));
+      check('the vote counters say 1, 2, 3 OF 3', slides.filter(s => s.id.startsWith('q-')).map(s => s.querySelector('.kick').textContent.replace(/\s+/g, ' ')).join('|') === '[ YOUR TURN · 1 OF 3 ]|[ YOUR TURN · 2 OF 3 ]|[ YOUR TURN · 3 OF 3 ]');
       const ids = Array.from(document.querySelectorAll('[id]')).filter(e => !e.closest('.supra-body')).map(e => e.id);
       check('every id outside the embedded Supra pages is unique', new Set(ids).size === ids.length);
       check('every vote has four answers and exactly one right one', slides.filter(s => s.id.startsWith('q-')).every(s =>
@@ -1702,8 +1371,6 @@ clearButton.addEventListener("click", clearOrder);
       // code that changes when the fix is revealed
       const swap = (id, a, b) => { const i = slideAt(id); go(i, 2); const x = slides[i].querySelector('.code [data-at]').textContent; go(i, 3); const y = slides[i].querySelector('.code [data-at]').textContent; return x === a && y === b };
       check('q-bug2: price shows button.dataset.price, then Number(…)', swap('q-bug2', 'button.dataset.price', 'Number(button.dataset.price)'));
-      check('q-c2: Order(7), then new Order(7)', swap('q-c2', 'Order(7)', 'new Order(7)'));
-      check('q-c3: items, then this.items', swap('q-c3', 'items', 'this.items'));
 
       // the embedded Supra pages: the buggy one shows all five bugs, the fixed one none
       const iSupra = slideAt('s-supra'), iBreak = slideAt('s-break');
