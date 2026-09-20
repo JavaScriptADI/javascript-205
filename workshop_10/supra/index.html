@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supra — Table 5</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <main class="supra">
+        <h1>Supra</h1>
+        <p class="table">Table 5 · what would you like?</p>
+
+        <label class="veg-toggle"><input type="checkbox" id="veg-only"> Veggie only</label>
+
+        <ul id="menu">
+            <li class="dish" data-veg="yes"><span class="name">Khachapuri</span> <span class="price">12 ₾</span> <button class="add" data-name="Khachapuri" data-price="12">Add</button></li>
+            <li class="dish" data-veg="no"><span class="name">Mtsvadi</span> <span class="price">15 ₾</span> <button class="add" data-name="Mtsvadi" data-price="15">Add</button></li>
+            <li class="dish" data-veg="yes"><span class="name">Lobio</span> <span class="price">8 ₾</span> <button class="add" data-name="Lobio" data-price="8">Add</button></li>
+            <li class="dish" data-veg="no"><span class="name">Chakapuli</span> <span class="price">14 ₾</span> <button class="add" data-name="Chakapuli" data-price="14">Add</button></li>
+            <li class="dish" data-veg="yes"><span class="name">Pkhali</span> <span class="price">7 ₾</span> <button class="add" data-name="Pkhali" data-price="7">Add</button></li>
+        </ul>
+
+        <h2>Your order</h2>
+        <ul id="order"></ul>
+        <p id="total">Total: 0 ₾</p>
+        <button id="clear">Clear order</button>
+    </main>
+</body>
+</html>
