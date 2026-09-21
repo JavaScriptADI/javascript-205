@@ -9,19 +9,30 @@
 </head>
 <body>
     <main class="game">
-        <h1>Coin Clicker</h1>
-        <p id="score">…</p>
-        <p id="per-click">…</p>
+        <header class="marquee">
+            <span class="marquee__led" aria-hidden="true"></span>
+            <h1 class="marquee__title">Coin Clicker</h1>
+        </header>
 
-        <button id="coin" aria-label="Collect a coin">🪙</button>
+        <div class="deck">
+            <section class="console">
+                <p id="score" class="readout" role="status">…</p>
+                <p id="per-click" class="readout__meta">…</p>
 
-        <h2>Shop</h2>
-        <div id="shop"></div>
+                <button id="coin" aria-label="Collect a coin">🪙</button>
+            </section>
 
-        <div class="race">
-            <button id="race-button">Start 10-second race</button>
-            <p id="race-result"></p>
+            <section class="rail" aria-labelledby="shop-title">
+                <h2 id="shop-title" class="rail__title">Shop</h2>
+                <div id="shop"></div>
+            </section>
         </div>
+
+        <section class="race" aria-labelledby="race-title">
+            <h2 id="race-title" class="rail__title">Race</h2>
+            <button id="race-button">Start 10-second race</button>
+            <p id="race-result" role="status"></p>
+        </section>
     </main>
 </body>
 </html>

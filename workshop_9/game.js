@@ -30,10 +30,21 @@ const upgrades = [
 
 
 function render() {
+    const scoreText = document.querySelector("#score");
+    const perClickText = document.querySelector("#per-click");
 
-
+    scoreText.textContent = `${score} 🪙`;
+    perClickText.textContent = `+${perClick} per click`;
     // Task 6 goes here, at the end of render()
 
+    // შევამოწმო upgrade-ები და რომელიც არ შემიძლია რომ ვიყიდო იმის ღილაკი უნდა გახდეს disabled
+    upgrades.forEach(upgrade => {
+        if (score < upgrade.price) {
+            upgrade.button.disabled = true;
+        } else {
+            upgrade.button.disabled = false;
+        }
+    });
 }
 
 
@@ -42,6 +53,15 @@ function render() {
 // Hint: const coin = document.querySelector("#coin");
 //       coin.addEventListener("click", () => { ... });
 // Expected: every click adds 1 to the score.
+const coinButton = document.querySelector("#coin");
+coinButton.addEventListener("click", () => {
+    coinButton.classList.remove("pop");
+    void coinButton.offsetWidth;
+    coinButton.classList.add("pop");
+    score += perClick;
+
+    render();
+});
 
 
 
@@ -52,8 +72,9 @@ function render() {
 // event on the coin. Listen for it and remove the class again, so the next
 // click can play the animation again.
 // Expected: the coin bounces on every click.
-
-
+coinButton.addEventListener("animationend", () => {
+    coinButton.classList.remove("pop");
+});
 
 // --- Task 4 — createElement + append ------------------------
 // Open the shop: one <button> per upgrade, inside #shop.
@@ -66,6 +87,21 @@ function render() {
 //   5. remember it on the object:    upgrade.button = button;   (Task 6 needs it)
 // The button is created INSIDE the loop: every upgrade gets its own new button.
 // Expected: three shop buttons appear under "Shop".
+const shopDiv = document.querySelector("#shop");
+upgrades.forEach(upgrade => {
+    const button = document.createElement("button");
+    button.classList.add("upgrade");
+    button.textContent = `${upgrade.name} · +${upgrade.bonus} per click · ${upgrade.price} 🪙`;
+    button.addEventListener("click", () => {
+        if (upgrade.price <= score) {
+            score -= upgrade.price;
+            perClick += upgrade.bonus;
+            render();
+        }
+    });
+    upgrade.button = button;
+    shopDiv.append(button);
+});
 
 // --- Task 5 — buy an upgrade --------------------------------
 // Still inside the same forEach: listen for a click on the button.
@@ -73,13 +109,6 @@ function render() {
 //   take the price away from score, add upgrade.bonus to perClick, call render().
 // Expected: click the coin 20 times, buy Extra hands → "0 🪙" and "+2 per click".
 
-upgrades.forEach(upgrade => {
-    // Task 4
-
-
-    // Task 5
-
-});
 
 
 // --- Task 6 — disabled --------------------------------------
