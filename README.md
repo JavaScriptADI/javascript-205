@@ -13,7 +13,6 @@
 7. DOM - Document Object Model
 8. fetch - to get data from another source - RestAPI
 
-
 ## Homeworks
 - [Homework 1](./homeworks/homework_1.md)
 - [Homework 2](./homeworks/homework_2.md)

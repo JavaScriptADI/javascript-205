@@ -6,65 +6,60 @@
 
 let order = [];
 
-const orderList = document.querySelector("#order");
-const totalText = document.querySelector("#total");
-const vegOnly = document.querySelector("#veg-only");
-const clearButton = document.querySelector("#clear");
-
+const orderListElement = document.querySelector("#order");
+const totalTextElement = document.querySelector("#total");
+const vegOnlyElement = document.querySelector("#veg-only");
+const clearButtonElement = document.querySelector("#clear");
 
 // Show the order and the total on the page
 function renderOrder() {
-    orderList.textContent = "";
+  orderListElement.textContent = "";
 
-    order.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${item.name} · ${item.price} ₾`;
+  order.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} · ${item.price} ₾`;
 
-        const remove = document.createElement("button");
-        remove.textContent = "Remove";
-        remove.addEventListener("click", () => removeDish(index));
+    const remove = document.createElement("button");
+    remove.textContent = "Remove";
+    remove.addEventListener("click", () => removeDish(index));
 
-        li.append(remove);
-        orderList.append(li);
-    });
+    li.append(remove);
+    orderListElement.append(li);
+  });
 
-    const total = order.reduce((sum, item) => sum + item.price, 0);
-    totalText.textContent = `Total: ${total} ₾`;
+  const total = order.reduce((sum, item) => sum + item.price, 0);
+  totalText.textContent = `Total: ${total} ₾`;
 }
-
 
 // Add: every dish on the menu has an Add button
 const addButton = document.querySelector(".add");
 addButton.addEventListener("click", () => {
-    order.push({ name: addButton.dataset.name, price: addButton.dataset.price });
-    renderOrder();
+  order.push({ name: addButton.dataset.name, price: addButton.dataset.price });
+  renderOrder();
 });
-
 
 // Remove: take one dish off the order
 function removeDish(index) {
-    order = order.filter((item, i) => i === index);
-    renderOrder();
+  order = order.filter((item, i) => i === index);
+  renderOrder();
 }
-
 
 // Veggie only: hide the dishes with meat
 vegOnly.addEventListener("change", () => {
-    document.querySelectorAll(".dish").forEach(dish => {
-        dish.classList.remove("hidden");
-        if (vegOnly.checked) {
-            if (dish.dataset.veg = "no") {
-                dish.classList.add("hidden");
-            }
-        }
-    });
+  document.querySelectorAll(".dish").forEach((dish) => {
+    dish.classList.remove("hidden");
+    if (vegOnly.checked) {
+      if ((dish.dataset.veg = "no")) {
+        dish.classList.add("hidden");
+      }
+    }
+  });
 });
-
 
 // Clear: empty the whole order
 function clearOrder() {
-    order = [];
-    renderOrder();
+  order = [];
+  renderOrder();
 }
 
 clearButton.addEventListener("click", clearOrder());
