@@ -17,6 +17,8 @@ const weekDays = {
 console.log(weekDays["wednesday"]);
 
 
+
+
 // code that assign value to weekDay according to weekDayNumber
 // if (weekDayNumber === 1) {
 //     weekDay = "Monday";
@@ -35,7 +37,7 @@ console.log(weekDays["wednesday"]);
 // }
 
 // switch (weekDayNumber) {
-//     case 1: 
+//     case 1:
 //         weekDay = "Monday";
 //         break;
 //     case 2:
