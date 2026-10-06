@@ -26,4 +26,7 @@
 - [Homework 11](https://github.com/JavaScriptADI/javascript-205-homework-11.git)
 - [Homework 12](https://github.com/JavaScriptADI/javascript-205-homework-12.git)
 
+## Final Project
+- [Final Project](https://github.com/JavaScriptADI/javascript-205-final-project) · [ქართულად](https://github.com/JavaScriptADI/javascript-205-final-project/blob/main/assignment/README_ka.md)
+
 [Book](https://eloquentjavascript.net/)
