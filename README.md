@@ -24,5 +24,6 @@
 - [Homework 8](https://github.com/JavaScriptADI/javascript-205-homework-8.git)
 - [Homework 9](https://github.com/JavaScriptADI/javascript-205-homework-9.git)
 - [Homework 11](https://github.com/JavaScriptADI/javascript-205-homework-11.git)
+- [Homework 12](https://github.com/JavaScriptADI/javascript-205-homework-12.git)
 
 [Book](https://eloquentjavascript.net/)
